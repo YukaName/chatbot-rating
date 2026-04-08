@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://chatbot-rating.vercel.app/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/cases</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/audit</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/kts</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/just-ai</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/twin</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/nc-team</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/autofaq</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/eora</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/crt</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/edna</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/sberdevices</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/bss</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/yandex-supportai</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/voxys</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/chatme</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/personik</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/nanosemantics</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/stafory</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/okkam</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/webim</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/lia-chat</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/botcreators</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/jetstyle</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/kokoc-tech</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/wehive</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/way2win</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/sherlock</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/salebot</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://chatbot-rating.vercel.app/developer/textback</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+</urlset>
