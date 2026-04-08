@@ -292,14 +292,26 @@ function RatingPage() {
   const [filterType, setFilterType] = useState('all');
 
   const sorted = useMemo(() => {
+    if (filterType === 'inhouse') return []; // handled separately
     let list = [...developers];
-    if (filterType === 'code') list = list.filter(d => d.type.includes('Код'));
-    else if (filterType === 'constructor') list = list.filter(d => d.type.includes('Конструктор'));
+    if (filterType === 'code') list = list.filter(d => !d.type.includes('Конструктор'));
+    else if (filterType === 'nocode') list = list.filter(d => d.type.includes('Конструктор'));
 
     if (sortBy === 'cases') list.sort((a, b) => b.cases - a.cases);
     else if (sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
     return list;
   }, [sortBy, filterType]);
+
+  // In-house: brands that built bots themselves, ranked by number of in-house cases
+  const inhouseBrands = useMemo(() => {
+    const map = {};
+    cases.filter(c => !c.developerSlug).forEach(c => {
+      if (!map[c.brand]) map[c.brand] = { brand: c.brand, industry: c.industry, brandRank: c.brandRank, cases: [], count: 0 };
+      map[c.brand].cases.push(c);
+      map[c.brand].count++;
+    });
+    return Object.values(map).sort((a, b) => b.count - a.count || a.brandRank - b.brandRank);
+  }, []);
 
   const totalCases = cases.length;
   const totalBrands = 100; // Топ-100 брендов России
@@ -334,8 +346,9 @@ function RatingPage() {
         <div style={{ display: 'flex', gap: 8 }}>
           {[
             { key: 'all', label: 'Все' },
-            { key: 'code', label: 'Код' },
-            { key: 'constructor', label: 'Конструктор' },
+            { key: 'code', label: 'Code' },
+            { key: 'nocode', label: 'No-Code' },
+            { key: 'inhouse', label: 'Внутренняя' },
           ].map(f => (
             <button key={f.key} onClick={() => setFilterType(f.key)} style={{
               padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
@@ -356,70 +369,127 @@ function RatingPage() {
         </select>
       </div>
 
-      {/* Rating Table */}
-      <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ background: THEME.bgCard }}>
-              <th style={thStyle}>#</th>
-              <th style={{ ...thStyle, textAlign: 'left' }}>Разработчик</th>
-              <th style={thStyle}>Кейсы</th>
-              <th className="col-type" style={{ ...thStyle, textAlign: 'left' }}>Тип</th>
-              <th className="col-brands" style={{ ...thStyle, textAlign: 'left', minWidth: 200 }}>Бренды</th>
-              <th className="col-site" style={thStyle}>Сайт</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((dev, i) => (
-              <tr key={dev.id}
-                style={{
-                  background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
-                  cursor: 'pointer', transition: 'background 0.15s',
-                }}
-                onClick={() => navigate(`/developer/${dev.slug}`)}
-                onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
-                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
-              >
-                <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
-                  <MedalIcon place={i + 1} />
-                </td>
-                <td style={{ ...tdStyle, fontWeight: 600 }}>
-                  <div>{dev.name}</div>
-                  {dev.name !== dev.fullName && (
-                    <div style={{ fontSize: 12, color: THEME.textMuted, fontWeight: 400 }}>
-                      {dev.fullName}
-                    </div>
-                  )}
-                </td>
-                <td style={{ ...tdStyle, textAlign: 'center' }}>
-                  <span style={{
-                    display: 'inline-block', padding: '4px 12px', borderRadius: 8,
-                    fontSize: 16, fontWeight: 700,
-                    color: dev.cases >= 4 ? THEME.success : dev.cases >= 2 ? THEME.warning : THEME.textSecondary,
-                    background: dev.cases >= 4 ? `${THEME.success}15` : dev.cases >= 2 ? `${THEME.warning}15` : 'transparent',
-                  }}>{dev.cases}</span>
-                </td>
-                <td className="col-type" style={tdStyle}>
-                  <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
-                    {dev.type.includes('Конструктор') ? 'Конструктор' : 'Код'}
-                  </Badge>
-                </td>
-                <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
-                  {dev.brands.slice(0, 3).join(', ')}
-                  {dev.brands.length > 3 && ` +${dev.brands.length - 3}`}
-                </td>
-                <td className="col-site" style={{ ...tdStyle, textAlign: 'center' }}>
-                  <a href={dev.site} target="_blank" rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                    style={{ fontSize: 13 }}>
-                    {new URL(dev.site).hostname.replace('www.', '')}
-                  </a>
-                </td>
+      {/* Rating Table or In-house */}
+      {filterType === 'inhouse' ? (
+        <>
+          <div style={{ marginBottom: 16, fontSize: 14, color: THEME.textSecondary }}>
+            Бренды из Топ-100, которые разработали чат-ботов силами собственных команд
+          </div>
+          <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: THEME.bgCard }}>
+                  <th style={thStyle}>#</th>
+                  <th style={{ ...thStyle, textAlign: 'left' }}>Бренд</th>
+                  <th style={thStyle}>Ботов</th>
+                  <th className="col-type" style={{ ...thStyle, textAlign: 'left' }}>Отрасль</th>
+                  <th className="col-brands" style={{ ...thStyle, textAlign: 'left' }}>Проекты</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inhouseBrands.map((b, i) => (
+                  <tr key={b.brand}
+                    style={{
+                      background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
+                    onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
+                  >
+                    <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
+                      <MedalIcon place={i + 1} />
+                    </td>
+                    <td style={{ ...tdStyle, fontWeight: 600 }}>
+                      <div>{b.brand}</div>
+                      <div style={{ fontSize: 12, color: THEME.textMuted, fontWeight: 400 }}>
+                        #{b.brandRank} в Топ-100
+                      </div>
+                    </td>
+                    <td style={{ ...tdStyle, textAlign: 'center' }}>
+                      <span style={{
+                        display: 'inline-block', padding: '4px 12px', borderRadius: 8,
+                        fontSize: 16, fontWeight: 700,
+                        color: b.count >= 3 ? THEME.success : b.count >= 2 ? THEME.warning : THEME.textSecondary,
+                        background: b.count >= 3 ? `${THEME.success}15` : b.count >= 2 ? `${THEME.warning}15` : 'transparent',
+                      }}>{b.count}</span>
+                    </td>
+                    <td className="col-type" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                      {b.industry}
+                    </td>
+                    <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                      {b.cases.map(c => c.botName).join(', ')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: THEME.bgCard }}>
+                <th style={thStyle}>#</th>
+                <th style={{ ...thStyle, textAlign: 'left' }}>Разработчик</th>
+                <th style={thStyle}>Кейсы</th>
+                <th className="col-type" style={{ ...thStyle, textAlign: 'left' }}>Тип</th>
+                <th className="col-brands" style={{ ...thStyle, textAlign: 'left', minWidth: 200 }}>Бренды</th>
+                <th className="col-site" style={thStyle}>Сайт</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {sorted.map((dev, i) => (
+                <tr key={dev.id}
+                  style={{
+                    background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
+                    cursor: 'pointer', transition: 'background 0.15s',
+                  }}
+                  onClick={() => navigate(`/developer/${dev.slug}`)}
+                  onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
+                  onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
+                >
+                  <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
+                    <MedalIcon place={i + 1} />
+                  </td>
+                  <td style={{ ...tdStyle, fontWeight: 600 }}>
+                    <div>{dev.name}</div>
+                    {dev.name !== dev.fullName && (
+                      <div style={{ fontSize: 12, color: THEME.textMuted, fontWeight: 400 }}>
+                        {dev.fullName}
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ ...tdStyle, textAlign: 'center' }}>
+                    <span style={{
+                      display: 'inline-block', padding: '4px 12px', borderRadius: 8,
+                      fontSize: 16, fontWeight: 700,
+                      color: dev.cases >= 4 ? THEME.success : dev.cases >= 2 ? THEME.warning : THEME.textSecondary,
+                      background: dev.cases >= 4 ? `${THEME.success}15` : dev.cases >= 2 ? `${THEME.warning}15` : 'transparent',
+                    }}>{dev.cases}</span>
+                  </td>
+                  <td className="col-type" style={tdStyle}>
+                    <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
+                      {dev.type.includes('Конструктор') ? 'No-Code' : 'Code'}
+                    </Badge>
+                  </td>
+                  <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                    {dev.brands.slice(0, 3).join(', ')}
+                    {dev.brands.length > 3 && ` +${dev.brands.length - 3}`}
+                  </td>
+                  <td className="col-site" style={{ ...tdStyle, textAlign: 'center' }}>
+                    <a href={dev.site} target="_blank" rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                      style={{ fontSize: 13 }}>
+                      {new URL(dev.site).hostname.replace('www.', '')}
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* SEO text */}
       <div style={{ marginTop: 48, padding: 32, background: THEME.bgCard, borderRadius: 12, border: `1px solid ${THEME.border}` }}>
@@ -427,9 +497,9 @@ function RatingPage() {
         <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 }}>
           Рейтинг основан на количестве публичных кейсов внедрения чат-ботов для компаний из списка
           «Топ-100 самых дорогих брендов России 2025» по версии BrandLab. Учитываются только подтверждённые
-          кейсы с публичными источниками. Рейтинг включает как компании, разрабатывающие ботов на заказ (код),
-          так и платформы-конструкторы (low-code/no-code). Внутренние разработки компаний (in-house)
-          учитываются отдельно и не входят в рейтинг подрядчиков.
+          кейсы с публичными источниками. Рейтинг включает как компании, разрабатывающие ботов на заказ (Code),
+          так и платформы-конструкторы (No-Code). Внутренние разработки компаний (in-house)
+          выделены в отдельную вкладку.
         </p>
       </div>
     </div>
