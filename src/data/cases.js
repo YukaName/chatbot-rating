@@ -151,6 +151,44 @@ export const cases = [
 
   // #19 Лента
   { brandRank: 19, brand: 'Лента', industry: 'Розничная торговля', botName: 'TG-бот + веб-апп', developer: 'Kokoc Tech', developerSlug: 'kokoc-tech', techType: 'Код', botType: 'Маркетинг/CRM', details: 'TG-бот: рассылки, бонусная карта, акции', source: 'https://kokoc.tech/case/lenta/' },
+
+  // ====== ВНУТРЕННИЕ РАЗРАБОТКИ (in-house) ======
+
+  // #5 Пятёрочка — внутренний бот
+  { brandRank: 5, brand: 'Пятёрочка (X5)', industry: 'Розничная торговля', botName: 'Электронный помощник @ks5_bot', developer: 'Внутренняя разработка X5', developerSlug: null, techType: 'Код', botType: 'Поддержка клиентов', details: 'Telegram-бот для клиентов Пятёрочки', source: 'https://t.me/ks5_bot' },
+
+  // #28 Билайн — виртуальный помощник
+  { brandRank: 28, brand: 'Билайн', industry: 'Телеком', botName: 'Виртуальный помощник', developer: 'Внутренняя разработка', developerSlug: null, techType: 'Код', botType: 'Голосовой ассистент + секретарь', details: 'Голосовой ассистент с расшифровкой звонков в TG, защита от спама, PRO-версия', source: 'https://moskva.beeline.ru/customers/products/vhelper/' },
+
+  // #29 T2 (Tele2) — HR-бот
+  { brandRank: 29, brand: 'T2 (Tele2)', industry: 'Телеком', botName: 'HR-бот найма (Казахстан)', developer: 'HR Messenger', developerSlug: null, techType: 'Конструктор (HR Messenger)', botType: 'HR', details: '5000 резюме → 1500 кандидатов, 705 часов экономии за 6 мес', source: 'https://blog.hrmessenger.com/2022/07/22/avtomatisirovanni-podbor-na-obuchenie-coll-centr-tele2-chat-bot/' },
+
+  // #60 Додо Пицца — голосовой заказ
+  { brandRank: 60, brand: 'Додо Пицца', industry: 'Общепит', botName: 'Додо Бот (голосовой заказ TG)', developer: 'Внутренняя разработка', developerSlug: null, techType: 'Код (OpenAI Whisper)', botType: 'Продажи/Заказ', details: 'Голосовой заказ пиццы в Telegram через OpenAI Whisper', source: 'https://habr.com/ru/companies/dododev/articles/902856/' },
+
+  // #62 Lamoda — роборекрутер
+  { brandRank: 62, brand: 'Lamoda', industry: 'Онлайн-торговля', botName: 'B-bot (роборекрутер)', developer: 'БЕТА', developerSlug: null, techType: 'Код', botType: 'HR', details: '44 кандидата/час, телефонный скрининг водителей', source: 'https://vc.ru/marketing/301174-keys-lamoda-44-kandidata-za-chas' },
+
+  // #68 Яндекс Такси
+  { brandRank: 68, brand: 'Яндекс Такси', industry: 'Транспорт', botName: 'Чат-бот поддержки', developer: 'Внутренняя разработка (Яндекс)', developerSlug: null, techType: 'Код', botType: 'Поддержка клиентов', details: 'Чат-бот в приложении (внутренняя экосистема Яндекс)', source: '' },
+
+  // #74 S7 Airlines — UX-копирайтинг бота
+  { brandRank: 74, brand: 'S7 Airlines', industry: 'Транспорт', botName: 'Бот-проводник Элли', developer: 'Климент Контент', developerSlug: null, techType: 'Код (UX-копирайтинг)', botType: 'Поддержка клиентов', details: '850 текстовых + 230 голосовых ответов переписаны. Бот на сайте, TG, моб. приложении', source: 'https://www.sostav.ru/blogs/284219/66962' },
+
+  // #79 Почта России — бот в MAX
+  { brandRank: 79, brand: 'Почта России', industry: 'Логистика', botName: 'Бот в MAX для бизнеса', developer: 'Внутренняя разработка', developerSlug: null, techType: 'Код', botType: 'B2B-поддержка', details: 'Бот в MAX (2026): оформление отправки, вызов курьера, отслеживание для МСБ', source: 'https://www.retail.ru/rbc/pressreleases/pochta-rossii-zapustila-chat-bot-v-messendzhere-max-dlya-malogo-i-srednego-biznesa/' },
+
+  // #81 Кинопоиск
+  { brandRank: 81, brand: 'Кинопоиск', industry: 'Развлечения', botName: 'Чат-бот поддержки', developer: 'Внутренняя разработка (Яндекс)', developerSlug: null, techType: 'Код', botType: 'Поддержка клиентов', details: 'Внутренняя экосистема Яндекс', source: '' },
+
+  // #83 HeadHunter
+  { brandRank: 83, brand: 'HeadHunter', industry: 'Интернет и технологии', botName: 'Навык в Алисе', developer: 'Внутренняя разработка', developerSlug: null, techType: 'Код', botType: 'HR/поиск работы', details: 'Навык в Алисе для поиска работы через HeadHunter', source: 'https://ria.ru/20180529/1521587924.html' },
+
+  // #96 Delivery Club
+  { brandRank: 96, brand: 'Delivery Club', industry: 'Онлайн-торговля', botName: 'Чат-бот поддержки', developer: 'Внутренняя разработка (Яндекс)', developerSlug: null, techType: 'Код', botType: 'Поддержка клиентов', details: 'Влит в Яндекс Еду, внутренняя экосистема Яндекс', source: '' },
+
+  // #99 СберЗдоровье
+  { brandRank: 99, brand: 'СберЗдоровье', industry: 'Здравоохранение', botName: 'Чат-бот поддержки', developer: 'Внутренняя разработка (Сбер)', developerSlug: null, techType: 'Код', botType: 'Поддержка клиентов', details: 'Внутренняя экосистема Сбер', source: '' },
 ];
 
 export const getCasesByBrand = (brand) => cases.filter(c => c.brand === brand);
