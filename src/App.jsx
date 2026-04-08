@@ -41,6 +41,18 @@ const globalStyles = `
   ::-webkit-scrollbar-track { background: ${THEME.bg}; }
   ::-webkit-scrollbar-thumb { background: ${THEME.borderLight}; border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: ${THEME.textMuted}; }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .rating-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .rating-table-wrap table { min-width: 600px; }
+    .hero-stats { flex-direction: column; align-items: stretch; }
+    .audit-grid { grid-template-columns: 1fr !important; }
+    .footer-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr !important; }
+  }
 `;
 
 // ============ ROUTER ============
@@ -163,32 +175,33 @@ function Header() {
     <header style={{
       background: `linear-gradient(180deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
       borderBottom: `1px solid ${THEME.border}`,
-      padding: '0 24px', position: 'sticky', top: 0, zIndex: 100,
+      padding: '0 16px', position: 'sticky', top: 0, zIndex: 100,
     }}>
       <div style={{
         maxWidth: 1200, margin: '0 auto', display: 'flex',
         alignItems: 'center', justifyContent: 'space-between', height: 56,
+        gap: 8,
       }}>
         <a href="#/" style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          textDecoration: 'none', color: THEME.text,
+          display: 'flex', alignItems: 'center', gap: 8,
+          textDecoration: 'none', color: THEME.text, flexShrink: 0,
         }}>
           <span style={{
-            fontSize: 24, fontWeight: 800,
+            fontSize: 22, fontWeight: 800,
             background: `linear-gradient(135deg, ${THEME.accent}, ${THEME.accentLight})`,
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>AI</span>
-          <span style={{ fontSize: 18, fontWeight: 600 }}>Рейтинги</span>
+          <span style={{ fontSize: 16, fontWeight: 600 }}>Рейтинги</span>
         </a>
-        <nav style={{ display: 'flex', gap: 4 }}>
+        <nav style={{ display: 'flex', gap: 2, overflow: 'auto' }}>
           {links.map(link => {
             const active = hash === link.href || (link.href === '#/' && (hash === '' || hash === '#/'));
             return (
               <a key={link.href} href={link.href} style={{
-                padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+                padding: '8px 12px', borderRadius: 8, fontSize: 13, fontWeight: 500,
                 color: active ? THEME.accentLight : THEME.textSecondary,
                 background: active ? THEME.accentBg : 'transparent',
-                textDecoration: 'none', transition: 'all 0.2s',
+                textDecoration: 'none', transition: 'all 0.2s', whiteSpace: 'nowrap',
               }}>{link.label}</a>
             );
           })}
@@ -207,7 +220,7 @@ function Footer() {
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Main footer */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
+        <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <span style={{
@@ -305,7 +318,7 @@ function RatingPage() {
           Рейтинг компаний по количеству публичных кейсов внедрения чат-ботов
           для брендов из <strong style={{ color: THEME.text }}>Топ-100 крупнейших брендов России</strong> (BrandLab 2025)
         </p>
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="hero-stats" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <StatBox label="Разработчиков" value={developers.length} />
           <StatBox label="Кейсов" value={totalCases} color={THEME.success} />
           <StatBox label="Брендов" value={totalBrands} color={THEME.warning} />
@@ -343,7 +356,7 @@ function RatingPage() {
       </div>
 
       {/* Rating Table */}
-      <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+      <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: THEME.bgCard }}>
@@ -427,6 +440,15 @@ function CasesPage() {
   const [filterIndustry, setFilterIndustry] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('developer');
+
+  // Build developer rank map for sorting
+  const devRankMap = useMemo(() => {
+    const sorted = [...developers].sort((a, b) => b.cases - a.cases);
+    const map = {};
+    sorted.forEach((d, i) => { map[d.slug] = i + 1; });
+    return map;
+  }, []);
 
   const filtered = useMemo(() => {
     let list = [...cases];
@@ -441,8 +463,17 @@ function CasesPage() {
         c.details.toLowerCase().includes(q)
       );
     }
-    return list.sort((a, b) => a.brandRank - b.brandRank);
-  }, [filterIndustry, filterType, search]);
+    if (sortBy === 'developer') {
+      list.sort((a, b) => {
+        const rankA = a.developerSlug ? (devRankMap[a.developerSlug] || 999) : 1000;
+        const rankB = b.developerSlug ? (devRankMap[b.developerSlug] || 999) : 1000;
+        return rankA - rankB || a.brandRank - b.brandRank;
+      });
+    } else {
+      list.sort((a, b) => a.brandRank - b.brandRank);
+    }
+    return list;
+  }, [filterIndustry, filterType, search, sortBy, devRankMap]);
 
   return (
     <div>
@@ -462,33 +493,39 @@ function CasesPage() {
 
       {/* Filters */}
       <div style={{
-        display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center',
+        display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center',
       }}>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
           placeholder="Поиск по бренду, боту, разработчику..."
           style={{
-            padding: '8px 16px', borderRadius: 8, fontSize: 14, flex: '1 1 250px',
+            padding: '10px 16px', borderRadius: 8, fontSize: 14, flex: '1 1 200px', minWidth: 0,
             border: `1px solid ${THEME.border}`, background: THEME.bgCard,
             color: THEME.text, outline: 'none',
           }}
         />
-        <select value={filterIndustry} onChange={e => setFilterIndustry(e.target.value)} style={selectStyle}>
+        <select value={filterIndustry} onChange={e => setFilterIndustry(e.target.value)} style={{ ...selectStyle, flex: '0 1 auto', minWidth: 0 }}>
           <option value="all">Все отрасли</option>
           {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
         </select>
-        <select value={filterType} onChange={e => setFilterType(e.target.value)} style={selectStyle}>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)} style={{ ...selectStyle, flex: '0 1 auto', minWidth: 0 }}>
           <option value="all">Все типы ботов</option>
           {botTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
       </div>
 
-      <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 16 }}>
-        Найдено: {filtered.length} кейсов
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ fontSize: 13, color: THEME.textMuted }}>
+          Найдено: {filtered.length} кейсов
+        </div>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={selectStyle}>
+          <option value="developer">По рейтингу разработчика</option>
+          <option value="brand">По позиции бренда</option>
+        </select>
       </div>
 
       {/* Cases Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))', gap: 16 }}>
         {filtered.map((c, i) => (
           <Card key={i}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
@@ -510,11 +547,11 @@ function CasesPage() {
                 {c.techType.includes('Конструктор') ? 'Конструктор' : 'Код'}
               </Badge>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, flexWrap: 'wrap', gap: 4 }}>
               <span>
-                Разработчик:{' '}
                 {c.developerSlug ? (
-                  <a href={`#/developer/${c.developerSlug}`} style={{ fontWeight: 600 }}>{c.developer}</a>
+                  <><a href={`#/developer/${c.developerSlug}`} style={{ fontWeight: 600 }}>{c.developer}</a>
+                  <span style={{ color: THEME.textMuted }}> #{devRankMap[c.developerSlug]} в рейтинге</span></>
                 ) : (
                   <span style={{ color: THEME.textMuted }}>{c.developer}</span>
                 )}
@@ -813,7 +850,7 @@ function AuditPage() {
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+      <div className="audit-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
         {/* Left: info */}
         <div>
           <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Аудит и подбор решения</h1>
