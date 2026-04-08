@@ -44,11 +44,12 @@ const globalStyles = `
 
   /* Mobile responsive */
   @media (max-width: 768px) {
-    .rating-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .rating-table-wrap table { min-width: 600px; }
     .hero-stats { flex-direction: column; align-items: stretch; }
     .audit-grid { grid-template-columns: 1fr !important; }
     .footer-grid { grid-template-columns: 1fr 1fr !important; }
+    .col-brands, .col-site, .col-type { display: none !important; }
+    .hero-section { padding: 32px 20px !important; }
+    .hero-section h1 { font-size: 24px !important; }
   }
   @media (max-width: 480px) {
     .footer-grid { grid-template-columns: 1fr !important; }
@@ -306,7 +307,7 @@ function RatingPage() {
   return (
     <div>
       {/* Hero */}
-      <div style={{
+      <div className="hero-section" style={{
         background: `linear-gradient(135deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
         border: `1px solid ${THEME.border}`, borderRadius: 16,
         padding: '48px 32px', marginBottom: 32, textAlign: 'center',
@@ -363,9 +364,9 @@ function RatingPage() {
               <th style={thStyle}>#</th>
               <th style={{ ...thStyle, textAlign: 'left' }}>Разработчик</th>
               <th style={thStyle}>Кейсы</th>
-              <th style={{ ...thStyle, textAlign: 'left' }}>Тип</th>
-              <th style={{ ...thStyle, textAlign: 'left', minWidth: 200 }}>Бренды</th>
-              <th style={thStyle}>Сайт</th>
+              <th className="col-type" style={{ ...thStyle, textAlign: 'left' }}>Тип</th>
+              <th className="col-brands" style={{ ...thStyle, textAlign: 'left', minWidth: 200 }}>Бренды</th>
+              <th className="col-site" style={thStyle}>Сайт</th>
             </tr>
           </thead>
           <tbody>
@@ -398,16 +399,16 @@ function RatingPage() {
                     background: dev.cases >= 4 ? `${THEME.success}15` : dev.cases >= 2 ? `${THEME.warning}15` : 'transparent',
                   }}>{dev.cases}</span>
                 </td>
-                <td style={tdStyle}>
+                <td className="col-type" style={tdStyle}>
                   <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
                     {dev.type.includes('Конструктор') ? 'Конструктор' : 'Код'}
                   </Badge>
                 </td>
-                <td style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
                   {dev.brands.slice(0, 3).join(', ')}
                   {dev.brands.length > 3 && ` +${dev.brands.length - 3}`}
                 </td>
-                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                <td className="col-site" style={{ ...tdStyle, textAlign: 'center' }}>
                   <a href={dev.site} target="_blank" rel="noopener noreferrer"
                     onClick={e => e.stopPropagation()}
                     style={{ fontSize: 13 }}>
