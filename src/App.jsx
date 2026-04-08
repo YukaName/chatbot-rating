@@ -203,36 +203,68 @@ function Footer() {
   return (
     <footer style={{
       borderTop: `1px solid ${THEME.border}`,
-      padding: '40px 24px', marginTop: 64,
+      padding: '48px 24px 32px', marginTop: 64,
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 24 }}>
-        <div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: THEME.text, marginBottom: 8 }}>
-            AI Рейтинги
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        {/* Main footer */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <span style={{
+                fontSize: 20, fontWeight: 800,
+                background: `linear-gradient(135deg, ${THEME.accent}, ${THEME.accentLight})`,
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              }}>AI</span>
+              <span style={{ fontSize: 16, fontWeight: 600 }}>Рейтинги</span>
+            </div>
+            <div style={{ fontSize: 13, color: THEME.textMuted, lineHeight: 1.8 }}>
+              Независимые рейтинги разработчиков<br />
+              ИИ и технологий в России.<br />
+              Данные из открытых источников.
+            </div>
           </div>
-          <div style={{ fontSize: 13, color: THEME.textMuted, lineHeight: 1.8 }}>
-            Независимые рейтинги разработчиков ИИ и технологий.<br />
-            Данные собраны из открытых источников.
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Навигация</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <a href="#/" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>Рейтинг разработчиков</a>
+              <a href="#/cases" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>Кейсы внедрения</a>
+              <a href="#/submit" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>Добавить кейс</a>
+              <a href="#/audit" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>Аудит и подбор решения</a>
+              <a href="#/about" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>О проекте</a>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Разработчик рейтинга</div>
+            <a href="https://aimap.am" target="_blank" rel="noopener noreferrer" style={{
+              fontSize: 18, fontWeight: 700, color: THEME.accentLight, textDecoration: 'none',
+              display: 'block', marginBottom: 8,
+            }}>AI Map</a>
+            <div style={{ fontSize: 12, color: THEME.textMuted, lineHeight: 1.8 }}>
+              Ереван, Армения<br />
+              пр. Саят-Новы, 40 (Fabula Coworking)
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Контакты</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <a href="mailto:info@aimap.am" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>info@aimap.am</a>
+              <a href="tel:+37441041640" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>+374 41 041 640</a>
+              <a href="https://t.me/aimap_sla" target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: THEME.textMuted, textDecoration: 'none' }}>Telegram: @aimap_sla</a>
+            </div>
           </div>
         </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 8 }}>Навигация</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <a href="#/" style={{ fontSize: 13, color: THEME.textMuted }}>Рейтинг</a>
-            <a href="#/cases" style={{ fontSize: 13, color: THEME.textMuted }}>Кейсы</a>
-            <a href="#/submit" style={{ fontSize: 13, color: THEME.textMuted }}>Добавить кейс</a>
-            <a href="#/audit" style={{ fontSize: 13, color: THEME.textMuted }}>Аудит проекта</a>
+
+        {/* Bottom bar */}
+        <div style={{
+          borderTop: `1px solid ${THEME.border}`, paddingTop: 20,
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+        }}>
+          <div style={{ fontSize: 12, color: THEME.textMuted }}>
+            {'\u00A9'} {new Date().getFullYear()} AI Map (ИП Леон Николаев). ՀՎՀՀ 28154419
           </div>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 4 }}>
-            Разработчик рейтинга
-          </div>
-          <a href="https://aimap.am" target="_blank" rel="noopener noreferrer" style={{
-            fontSize: 16, fontWeight: 700, color: THEME.accentLight, textDecoration: 'none',
-          }}>AI Map</a>
-          <div style={{ fontSize: 12, color: THEME.textMuted, marginTop: 4 }}>
-            Ереван, Армения
+          <div style={{ display: 'flex', gap: 16 }}>
+            <a href="#/privacy" style={{ fontSize: 12, color: THEME.textMuted, textDecoration: 'none' }}>Политика обработки данных</a>
+            <a href="https://aimap.am" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: THEME.textMuted, textDecoration: 'none' }}>aimap.am</a>
           </div>
         </div>
       </div>
@@ -255,8 +287,8 @@ function RatingPage() {
     return list;
   }, [sortBy, filterType]);
 
-  const totalCases = cases.filter(c => c.developerSlug).length;
-  const totalBrands = new Set(cases.map(c => c.brand)).size;
+  const totalCases = cases.length;
+  const totalBrands = 100; // Топ-100 брендов России
 
   return (
     <div>
@@ -971,6 +1003,136 @@ function AboutPage() {
   );
 }
 
+// ============ PRIVACY PAGE ============
+function PrivacyPage() {
+  const S = { h2: { fontSize: 18, fontWeight: 700, marginTop: 32, marginBottom: 12 }, p: { fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }, li: { fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 } };
+  return (
+    <div style={{ maxWidth: 800 }}>
+      <Breadcrumb items={[{ label: 'Главная', href: '#/' }, { label: 'Политика обработки данных' }]} />
+      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Политика обработки персональных данных</h1>
+      <p style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 32 }}>Дата вступления в силу: 8 апреля 2026 г.</p>
+
+      <Card>
+        <h2 style={S.h2}>1. Общие положения</h2>
+        <p style={S.p}>
+          Настоящая Политика обработки персональных данных (далее — Политика) определяет порядок обработки
+          и защиты персональных данных пользователей сайта AI Рейтинги (далее — Сайт).
+        </p>
+        <p style={S.p}>
+          Оператором персональных данных является: ИП Леон Николаев (ИП Леон Николаев),
+          ՀՎՀՀ 28154419, Республика Армения, г. Ереван, пр. Саят-Новы, д. 40 (Fabula Coworking).
+        </p>
+        <p style={S.p}>
+          Используя Сайт и/или заполняя формы на Сайте, пользователь выражает своё согласие
+          с условиями настоящей Политики.
+        </p>
+
+        <h2 style={S.h2}>2. Какие данные мы собираем</h2>
+        <p style={S.p}>Мы можем собирать следующие персональные данные, предоставленные пользователем добровольно:</p>
+        <ul style={{ paddingLeft: 20, marginBottom: 12 }}>
+          <li style={S.li}>Имя и фамилия</li>
+          <li style={S.li}>Адрес электронной почты</li>
+          <li style={S.li}>Номер телефона</li>
+          <li style={S.li}>Наименование компании</li>
+          <li style={S.li}>Описание проекта или задачи</li>
+        </ul>
+        <p style={S.p}>Также автоматически собираются технические данные:</p>
+        <ul style={{ paddingLeft: 20, marginBottom: 12 }}>
+          <li style={S.li}>IP-адрес</li>
+          <li style={S.li}>Тип и версия браузера</li>
+          <li style={S.li}>Данные cookie-файлов</li>
+          <li style={S.li}>Данные Яндекс.Метрики (обезличенные)</li>
+        </ul>
+
+        <h2 style={S.h2}>3. Цели обработки данных</h2>
+        <p style={S.p}>Персональные данные обрабатываются для следующих целей:</p>
+        <ul style={{ paddingLeft: 20, marginBottom: 12 }}>
+          <li style={S.li}>Обработка заявок на аудит и подбор решения</li>
+          <li style={S.li}>Обработка предложений о дополнении рейтинга (форма добавления кейса)</li>
+          <li style={S.li}>Связь с пользователем по его запросу</li>
+          <li style={S.li}>Улучшение работы Сайта и анализ посещаемости</li>
+        </ul>
+
+        <h2 style={S.h2}>4. Правовые основания обработки</h2>
+        <p style={S.p}>
+          Обработка персональных данных осуществляется на основании добровольного согласия пользователя,
+          выраженного путём заполнения форм на Сайте. Пользователь может отозвать своё согласие
+          в любой момент, направив запрос на адрес info@aimap.am.
+        </p>
+
+        <h2 style={S.h2}>5. Хранение и защита данных</h2>
+        <p style={S.p}>
+          Персональные данные хранятся не дольше, чем это необходимо для целей обработки.
+          Данные, переданные через формы Сайта, отправляются на электронную почту оператора
+          и не хранятся в базах данных Сайта.
+        </p>
+        <p style={S.p}>
+          Оператор принимает необходимые организационные и технические меры для защиты
+          персональных данных от неправомерного или случайного доступа, уничтожения,
+          изменения, блокирования, копирования, распространения.
+        </p>
+
+        <h2 style={S.h2}>6. Передача данных третьим лицам</h2>
+        <p style={S.p}>
+          Оператор не передаёт персональные данные третьим лицам без согласия пользователя,
+          за исключением случаев, предусмотренных законодательством Республики Армения.
+        </p>
+        <p style={S.p}>
+          На Сайте используется сервис веб-аналитики Яндекс.Метрика (ООО «Яндекс», Россия),
+          который собирает обезличенные данные о посещении Сайта в соответствии
+          с собственной политикой конфиденциальности.
+        </p>
+
+        <h2 style={S.h2}>7. Cookie-файлы</h2>
+        <p style={S.p}>
+          Сайт использует cookie-файлы для обеспечения корректной работы и сбора аналитики.
+          Пользователь может отключить cookie-файлы в настройках браузера, однако это может
+          повлиять на функциональность Сайта.
+        </p>
+
+        <h2 style={S.h2}>8. Права пользователя</h2>
+        <p style={S.p}>Пользователь имеет право:</p>
+        <ul style={{ paddingLeft: 20, marginBottom: 12 }}>
+          <li style={S.li}>Получить информацию об обработке своих персональных данных</li>
+          <li style={S.li}>Потребовать уточнения, блокирования или уничтожения своих данных</li>
+          <li style={S.li}>Отозвать согласие на обработку персональных данных</li>
+          <li style={S.li}>Обжаловать действия оператора в уполномоченный орган</li>
+        </ul>
+        <p style={S.p}>
+          Для реализации указанных прав направьте запрос на адрес:{' '}
+          <a href="mailto:info@aimap.am">info@aimap.am</a>
+        </p>
+
+        <h2 style={S.h2}>9. Контактная информация оператора</h2>
+        <div style={{ background: THEME.bg, borderRadius: 8, padding: 20, border: `1px solid ${THEME.border}`, marginTop: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '8px 16px', fontSize: 14, color: THEME.textSecondary }}>
+            <span style={{ color: THEME.textMuted }}>Оператор:</span>
+            <span>Ա/Ձ ԼԵՎՈՆ ՆԻdelays Հdelays (ИП Леон Николаев)</span>
+            <span style={{ color: THEME.textMuted }}>ՀՎՀՀ:</span>
+            <span>28154419</span>
+            <span style={{ color: THEME.textMuted }}>Адрес:</span>
+            <span>Республика Армения, г. Ереван, пр. Саят-Новы, д. 40</span>
+            <span style={{ color: THEME.textMuted }}>Email:</span>
+            <a href="mailto:info@aimap.am">info@aimap.am</a>
+            <span style={{ color: THEME.textMuted }}>Телефон:</span>
+            <a href="tel:+37441041640">+374 41 041 640</a>
+            <span style={{ color: THEME.textMuted }}>Telegram:</span>
+            <a href="https://t.me/aimap_sla" target="_blank" rel="noopener noreferrer">@aimap_sla</a>
+          </div>
+        </div>
+
+        <h2 style={S.h2}>10. Изменения в Политике</h2>
+        <p style={S.p}>
+          Оператор оставляет за собой право вносить изменения в настоящую Политику.
+          Актуальная версия Политики размещена на данной странице Сайта.
+          Продолжение использования Сайта после внесения изменений означает согласие
+          пользователя с обновлённой Политикой.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
 // ============ TABLE STYLES ============
 const thStyle = {
   padding: '12px 16px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase',
@@ -1003,6 +1165,8 @@ export default function App() {
     page = <SubmitCasePage />;
   } else if (hash === '#/audit') {
     page = <AuditPage />;
+  } else if (hash === '#/privacy') {
+    page = <PrivacyPage />;
   } else if (hash === '#/about') {
     page = <AboutPage />;
   } else {
