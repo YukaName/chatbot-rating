@@ -762,7 +762,7 @@ function SubmitCasePage() {
   const [form, setForm] = useState({
     brand: '', botName: '', developer: '', developerSite: '',
     botType: '', techType: '', details: '', source: '',
-    contactName: '', contactEmail: '',
+    contactName: '', contactTg: '',
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -771,13 +771,13 @@ function SubmitCasePage() {
     e.preventDefault();
     setSending(true);
     try {
-      await fetch('https://script.google.com/a/macros/leonnikolaev.pro/s/AKfycbw7tBHWn0WdM1fSQSPIIeI9camJZmSZGwKfP_5IPZfntk_knpZ30OqPRfs8_F-alMtCrw/exec', {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+      const r = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'case', ...form }),
       });
-      setSubmitted(true);
-    } catch { setSubmitted(true); }
+      if (r.ok) setSubmitted(true);
+    } catch { alert('Ошибка отправки. Попробуйте позже.'); }
     setSending(false);
   };
 
@@ -791,7 +791,7 @@ function SubmitCasePage() {
         <p style={{ fontSize: 14, color: THEME.textSecondary, marginBottom: 24 }}>
           Ваш кейс отправлен на рассмотрение. Мы проверим данные и добавим его в рейтинг.
         </p>
-        <button onClick={() => { setSubmitted(false); setForm({ brand: '', botName: '', developer: '', developerSite: '', botType: '', techType: '', details: '', source: '', contactName: '', contactEmail: '' }); }}
+        <button onClick={() => { setSubmitted(false); setForm({ brand: '', botName: '', developer: '', developerSite: '', botType: '', techType: '', details: '', source: '', contactName: '', contactTg: '' }); }}
           style={{ ...btnPrimary, background: THEME.bgCard, border: `1px solid ${THEME.border}`, color: THEME.textSecondary }}>
           Отправить ещё
         </button>
@@ -879,8 +879,8 @@ function SubmitCasePage() {
               <input value={form.contactName} onChange={update('contactName')} placeholder="Имя" style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>Email</label>
-              <input type="email" value={form.contactEmail} onChange={update('contactEmail')} placeholder="email@example.com" style={inputStyle} />
+              <label style={labelStyle}>Telegram</label>
+              <input value={form.contactTg} onChange={update('contactTg')} placeholder="@username" style={inputStyle} />
             </div>
           </div>
         </Card>
@@ -897,7 +897,7 @@ function SubmitCasePage() {
 function AuditPage() {
   const [form, setForm] = useState({
     company: '', industry: '', task: '', budget: '',
-    contactName: '', contactEmail: '', contactPhone: '', message: '',
+    contactName: '', contactTg: '', contactPhone: '', message: '',
   });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
@@ -906,13 +906,13 @@ function AuditPage() {
     e.preventDefault();
     setSending(true);
     try {
-      await fetch('https://script.google.com/a/macros/leonnikolaev.pro/s/AKfycbw7tBHWn0WdM1fSQSPIIeI9camJZmSZGwKfP_5IPZfntk_knpZ30OqPRfs8_F-alMtCrw/exec', {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+      const r = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'audit', ...form }),
       });
-      setSubmitted(true);
-    } catch { setSubmitted(true); }
+      if (r.ok) setSubmitted(true);
+    } catch { alert('Ошибка отправки. Попробуйте позже.'); }
     setSending(false);
   };
 
@@ -1026,8 +1026,8 @@ function AuditPage() {
                       <input required value={form.contactName} onChange={update('contactName')} placeholder="Ваше имя" style={inputStyle} />
                     </div>
                     <div>
-                      <label style={labelStyle}>Email *</label>
-                      <input required type="email" value={form.contactEmail} onChange={update('contactEmail')} placeholder="email@company.ru" style={inputStyle} />
+                      <label style={labelStyle}>Telegram *</label>
+                      <input required value={form.contactTg} onChange={update('contactTg')} placeholder="@username" style={inputStyle} />
                     </div>
                     <div>
                       <label style={labelStyle}>Телефон</label>
