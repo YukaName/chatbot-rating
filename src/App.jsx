@@ -577,7 +577,26 @@ function DeveloperPage({ slug }) {
   if (!dev) return <div style={{ textAlign: 'center', padding: 64 }}><h2>Разработчик не найден</h2><a href="#/">Вернуться к рейтингу</a></div>;
 
   const devCases = getCasesByDeveloper(slug);
-  const rank = developers.sort((a, b) => b.cases - a.cases).findIndex(d => d.id === dev.id) + 1;
+  const rank = [...developers].sort((a, b) => b.cases - a.cases).findIndex(d => d.id === dev.id) + 1;
+
+  // Calculate category rank (Code or Constructor)
+  const isConstructor = dev.type.includes('Конструктор');
+  const codeDevs = [...developers].filter(d => !d.type.includes('Конструктор')).sort((a, b) => b.cases - a.cases);
+  const constructorDevs = [...developers].filter(d => d.type.includes('Конструктор')).sort((a, b) => b.cases - a.cases);
+  const codeRank = codeDevs.findIndex(d => d.id === dev.id) + 1;
+  const constructorRank = constructorDevs.findIndex(d => d.id === dev.id) + 1;
+
+  // Pick the best category rank
+  let categoryRank, categoryLabel, categoryColor;
+  if (isConstructor) {
+    categoryRank = constructorRank;
+    categoryLabel = `Топ No-Code`;
+    categoryColor = THEME.warning;
+  } else {
+    categoryRank = codeRank;
+    categoryLabel = `Топ Code`;
+    categoryColor = THEME.accent;
+  }
 
   return (
     <div>
@@ -595,8 +614,8 @@ function DeveloperPage({ slug }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
               <h1 style={{ fontSize: 28, fontWeight: 800 }}>{dev.name}</h1>
-              <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
-                {dev.type.includes('Конструктор') ? 'Конструктор' : 'Код'}
+              <Badge color={isConstructor ? THEME.warning : THEME.accent}>
+                {isConstructor ? 'Конструктор' : 'Код'}
               </Badge>
             </div>
             {dev.name !== dev.fullName && (
@@ -607,10 +626,10 @@ function DeveloperPage({ slug }) {
             </p>
             <ExternalLink href={dev.site}>{dev.site}</ExternalLink>
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <StatBox label="Место в рейтинге" value={`#${rank}`} color={rank <= 3 ? THEME.gold : THEME.accent} />
-            <StatBox label="Кейсов Топ-100" value={dev.cases} color={THEME.success} />
-            <StatBox label="Брендов" value={dev.brands.length} color={THEME.warning} />
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <StatBox label="Общий рейтинг" value={`#${rank}`} color={rank <= 3 ? THEME.gold : THEME.accent} />
+            <StatBox label={categoryLabel} value={`#${categoryRank}`} color={categoryColor} />
+            <StatBox label="Кейсов" value={dev.cases} color={THEME.success} />
           </div>
         </div>
       </div>
