@@ -73,13 +73,13 @@ function renderRating() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "AI Рейтинги",
-    "url": "https://chatbot-rating.vercel.app/",
+    "url": "https://devrating.ru/",
     "description": "Независимые рейтинги разработчиков чат-ботов, ИИ-решений и технологий для бизнеса в России",
     "inLanguage": "ru"
   });
 
   return shell(
-    meta('Рейтинг разработчиков чат-ботов — AI Рейтинги', `Рейтинг ${sorted.length} компаний-разработчиков чат-ботов по количеству публичных кейсов для Топ-100 крупнейших брендов России (BrandLab 2025). ${sorted.slice(0, 5).map(d => d.name).join(', ')} и другие.`, 'https://chatbot-rating.vercel.app/') + `<script type="application/ld+json">${jsonLd}</script>`,
+    meta('Рейтинг разработчиков чат-ботов — AI Рейтинги', `Рейтинг ${sorted.length} компаний-разработчиков чат-ботов по количеству публичных кейсов для Топ-100 крупнейших брендов России (BrandLab 2025). ${sorted.slice(0, 5).map(d => d.name).join(', ')} и другие.`, 'https://devrating.ru/') + `<script type="application/ld+json">${jsonLd}</script>`,
     `<h1>Рейтинг разработчиков чат-ботов</h1>
 <p>${sorted.length} компаний-разработчиков с публичными кейсами внедрения чат-ботов для брендов из <strong>Топ-100 крупнейших брендов России</strong> (BrandLab 2025).</p>
 <table><thead><tr><th>#</th><th>Разработчик</th><th>Кейсы</th><th>Тип</th><th>Бренды</th><th>Сайт</th></tr></thead><tbody>${rows}</tbody></table>
@@ -106,7 +106,7 @@ function renderDeveloper(slug) {
     meta(
       `${dev.fullName || dev.name} — Разработчик чат-ботов #${rank} — AI Рейтинги`,
       `${dev.fullName || dev.name}: ${dev.cases} кейсов для Топ-100 брендов России. Клиенты: ${dev.brands.join(', ')}. ${dev.description}`,
-      `https://chatbot-rating.vercel.app/developer/${slug}`
+      `https://devrating.ru/developer/${slug}`
     ) + `<script type="application/ld+json">${jsonLd}</script>`,
     `<div class="nav"><a href="/">AI Рейтинги</a> / <a href="/">Рейтинг</a> / ${escHtml(dev.fullName || dev.name)}</div>
 <h1>${escHtml(dev.fullName || dev.name)}</h1>
@@ -121,7 +121,7 @@ function renderDeveloper(slug) {
 
 function renderCases() {
   return shell(
-    meta('Кейсы внедрения чат-ботов — AI Рейтинги', '81 кейс внедрения чат-ботов для компаний из Топ-100 крупнейших брендов России: Сбер, Яндекс, ВТБ, Wildberries, Т-Банк, РЖД, Ozon, МТС и другие.', 'https://chatbot-rating.vercel.app/cases'),
+    meta('Кейсы внедрения чат-ботов — AI Рейтинги', '81 кейс внедрения чат-ботов для компаний из Топ-100 крупнейших брендов России: Сбер, Яндекс, ВТБ, Wildberries, Т-Банк, РЖД, Ozon, МТС и другие.', 'https://devrating.ru/cases'),
     `<div class="nav"><a href="/">AI Рейтинги</a> / Кейсы</div>
 <h1>Кейсы внедрения чат-ботов</h1>
 <p>81 кейс внедрения для компаний из Топ-100 крупнейших брендов России (BrandLab 2025).</p>
@@ -133,7 +133,7 @@ function renderCases() {
 
 function renderAbout() {
   return shell(
-    meta('О проекте — AI Рейтинги', 'AI Рейтинги — независимый проект армянской компании AI Map. Рейтинги разработчиков чат-ботов, ИИ-решений и технологий для бизнеса в России.', 'https://chatbot-rating.vercel.app/about'),
+    meta('О проекте — AI Рейтинги', 'AI Рейтинги — независимый проект армянской компании AI Map. Рейтинги разработчиков чат-ботов, ИИ-решений и технологий для бизнеса в России.', 'https://devrating.ru/about'),
     `<div class="nav"><a href="/">AI Рейтинги</a> / О проекте</div>
 <h1>О проекте AI Рейтинги</h1>
 <h2>Разработчик рейтинга — AI Map</h2>
