@@ -766,25 +766,19 @@ function SubmitCasePage() {
   });
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [sending, setSending] = useState(false);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Формируем mailto-ссылку с данными формы
-    const subject = encodeURIComponent(`Новый кейс: ${form.brand} — ${form.botName}`);
-    const body = encodeURIComponent(
-      `Бренд: ${form.brand}\n` +
-      `Название бота: ${form.botName}\n` +
-      `Разработчик: ${form.developer}\n` +
-      `Сайт разработчика: ${form.developerSite}\n` +
-      `Тип бота: ${form.botType}\n` +
-      `Технология: ${form.techType}\n` +
-      `Детали кейса: ${form.details}\n` +
-      `Ссылка на источник: ${form.source}\n` +
-      `---\n` +
-      `Контакт: ${form.contactName}\n` +
-      `Email: ${form.contactEmail}`
-    );
-    window.open(`mailto:info@aimap.am?subject=${subject}&body=${body}`, '_blank');
-    setSubmitted(true);
+    setSending(true);
+    try {
+      await fetch('https://script.google.com/a/macros/leonnikolaev.pro/s/AKfycbw7tBHWn0WdM1fSQSPIIeI9camJZmSZGwKfP_5IPZfntk_knpZ30OqPRfs8_F-alMtCrw/exec', {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ type: 'case', ...form }),
+      });
+      setSubmitted(true);
+    } catch { setSubmitted(true); }
+    setSending(false);
   };
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
@@ -891,7 +885,9 @@ function SubmitCasePage() {
           </div>
         </Card>
 
-        <button type="submit" style={btnPrimary}>Отправить кейс</button>
+        <button type="submit" disabled={sending} style={{ ...btnPrimary, opacity: sending ? 0.6 : 1 }}>
+          {sending ? 'Отправка...' : 'Отправить кейс'}
+        </button>
       </form>
     </div>
   );
@@ -904,23 +900,20 @@ function AuditPage() {
     contactName: '', contactEmail: '', contactPhone: '', message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Запрос на аудит: ${form.company}`);
-    const body = encodeURIComponent(
-      `Компания: ${form.company}\n` +
-      `Отрасль: ${form.industry}\n` +
-      `Задача: ${form.task}\n` +
-      `Бюджет: ${form.budget}\n` +
-      `Комментарий: ${form.message}\n` +
-      `---\n` +
-      `Контакт: ${form.contactName}\n` +
-      `Email: ${form.contactEmail}\n` +
-      `Телефон: ${form.contactPhone}`
-    );
-    window.open(`mailto:info@aimap.am?subject=${subject}&body=${body}`, '_blank');
-    setSubmitted(true);
+    setSending(true);
+    try {
+      await fetch('https://script.google.com/a/macros/leonnikolaev.pro/s/AKfycbw7tBHWn0WdM1fSQSPIIeI9camJZmSZGwKfP_5IPZfntk_knpZ30OqPRfs8_F-alMtCrw/exec', {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ type: 'audit', ...form }),
+      });
+      setSubmitted(true);
+    } catch { setSubmitted(true); }
+    setSending(false);
   };
 
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
@@ -1044,8 +1037,8 @@ function AuditPage() {
                 </div>
               </div>
 
-              <button type="submit" style={{ ...btnPrimary, width: '100%', marginTop: 20 }}>
-                Отправить заявку
+              <button type="submit" disabled={sending} style={{ ...btnPrimary, width: '100%', marginTop: 20, opacity: sending ? 0.6 : 1 }}>
+                {sending ? 'Отправка...' : 'Отправить заявку'}
               </button>
             </Card>
           </form>
