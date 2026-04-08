@@ -1,5 +1,5 @@
 const TG_TOKEN = '8532251052:AAGXsFa78-a4aX4MZIorOxA4XZbVoPC3bpA';
-const CHAT_ID = '5635906137';
+const CHAT_ID = '-5232595635';
 
 async function sendTelegram(text) {
   await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
