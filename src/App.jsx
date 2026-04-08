@@ -1,0 +1,1022 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { developers, getDeveloperBySlug } from './data/developers';
+import { cases, getCasesByDeveloper, industries, botTypes, brands } from './data/cases';
+
+// ============ THEME ============
+const THEME = {
+  bg: '#0a0d1a',
+  bgCard: '#131729',
+  bgCardHover: '#1a1f36',
+  border: '#1e2440',
+  borderLight: '#2a3050',
+  accent: '#6366f1',
+  accentLight: '#818cf8',
+  accentBg: 'rgba(99,102,241,0.1)',
+  text: '#e2e8f0',
+  textSecondary: '#94a3b8',
+  textMuted: '#64748b',
+  success: '#22c55e',
+  warning: '#f59e0b',
+  danger: '#ef4444',
+  gold: '#fbbf24',
+  silver: '#94a3b8',
+  bronze: '#cd7f32',
+};
+
+// ============ STYLES ============
+const globalStyles = `
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: ${THEME.bg};
+    color: ${THEME.text};
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: ${THEME.accentLight}; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ::selection { background: ${THEME.accent}; color: white; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: ${THEME.bg}; }
+  ::-webkit-scrollbar-thumb { background: ${THEME.borderLight}; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: ${THEME.textMuted}; }
+`;
+
+// ============ ROUTER ============
+function useHashRouter() {
+  const [hash, setHash] = useState(window.location.hash || '#/');
+  useEffect(() => {
+    const onHash = () => setHash(window.location.hash || '#/');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+  return hash;
+}
+
+function navigate(path) {
+  window.location.hash = path;
+  window.scrollTo(0, 0);
+}
+
+// ============ HELPER COMPONENTS ============
+function Badge({ children, color = THEME.accent, bg }) {
+  return (
+    <span style={{
+      display: 'inline-block', padding: '2px 10px', borderRadius: 12,
+      fontSize: 12, fontWeight: 600, color,
+      background: bg || `${color}18`, border: `1px solid ${color}30`,
+      whiteSpace: 'nowrap',
+    }}>{children}</span>
+  );
+}
+
+function Card({ children, style, onClick }) {
+  return (
+    <div onClick={onClick} style={{
+      background: THEME.bgCard, border: `1px solid ${THEME.border}`,
+      borderRadius: 12, padding: 24, transition: 'all 0.2s',
+      cursor: onClick ? 'pointer' : 'default',
+      ...style,
+    }} onMouseEnter={e => {
+      e.currentTarget.style.background = THEME.bgCardHover;
+      e.currentTarget.style.borderColor = THEME.borderLight;
+    }} onMouseLeave={e => {
+      e.currentTarget.style.background = THEME.bgCard;
+      e.currentTarget.style.borderColor = THEME.border;
+    }}>{children}</div>
+  );
+}
+
+function MedalIcon({ place }) {
+  if (place === 1) return <span style={{ fontSize: 20 }}>🥇</span>;
+  if (place === 2) return <span style={{ fontSize: 20 }}>🥈</span>;
+  if (place === 3) return <span style={{ fontSize: 20 }}>🥉</span>;
+  return <span style={{ color: THEME.textMuted, fontWeight: 600, fontSize: 14 }}>#{place}</span>;
+}
+
+function ExternalLink({ href, children }) {
+  if (!href) return <span style={{ color: THEME.textMuted }}>—</span>;
+  return <a href={href} target="_blank" rel="noopener noreferrer">{children || href}</a>;
+}
+
+function StatBox({ label, value, color }) {
+  return (
+    <div style={{
+      background: THEME.bg, borderRadius: 8, padding: '12px 16px',
+      border: `1px solid ${THEME.border}`, textAlign: 'center', flex: '1 1 120px',
+    }}>
+      <div style={{ fontSize: 24, fontWeight: 700, color: color || THEME.accent }}>{value}</div>
+      <div style={{ fontSize: 12, color: THEME.textMuted, marginTop: 2 }}>{label}</div>
+    </div>
+  );
+}
+
+function Breadcrumb({ items }) {
+  return (
+    <nav style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 16 }}>
+      {items.map((item, i) => (
+        <span key={i}>
+          {i > 0 && <span style={{ margin: '0 6px' }}>/</span>}
+          {item.href ? (
+            <a href={item.href} style={{ color: THEME.textMuted }}
+              onMouseEnter={e => e.target.style.color = THEME.accentLight}
+              onMouseLeave={e => e.target.style.color = THEME.textMuted}
+            >{item.label}</a>
+          ) : (
+            <span style={{ color: THEME.textSecondary }}>{item.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
+// ============ FORM STYLES ============
+const inputStyle = {
+  width: '100%', padding: '10px 14px', borderRadius: 8, fontSize: 14,
+  border: `1px solid ${THEME.border}`, background: THEME.bg,
+  color: THEME.text, outline: 'none', transition: 'border-color 0.2s',
+};
+
+const labelStyle = {
+  display: 'block', fontSize: 13, fontWeight: 600, color: THEME.textSecondary,
+  marginBottom: 6,
+};
+
+const btnPrimary = {
+  padding: '12px 32px', borderRadius: 8, fontSize: 15, fontWeight: 600,
+  border: 'none', background: `linear-gradient(135deg, ${THEME.accent}, ${THEME.accentLight})`,
+  color: 'white', cursor: 'pointer', transition: 'opacity 0.2s',
+};
+
+// ============ HEADER ============
+function Header() {
+  const hash = window.location.hash || '#/';
+  const links = [
+    { label: 'Рейтинг', href: '#/' },
+    { label: 'Кейсы', href: '#/cases' },
+    { label: 'Аудит', href: '#/audit' },
+    { label: 'О проекте', href: '#/about' },
+  ];
+  return (
+    <header style={{
+      background: `linear-gradient(180deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
+      borderBottom: `1px solid ${THEME.border}`,
+      padding: '0 24px', position: 'sticky', top: 0, zIndex: 100,
+    }}>
+      <div style={{
+        maxWidth: 1200, margin: '0 auto', display: 'flex',
+        alignItems: 'center', justifyContent: 'space-between', height: 56,
+      }}>
+        <a href="#/" style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          textDecoration: 'none', color: THEME.text,
+        }}>
+          <span style={{
+            fontSize: 24, fontWeight: 800,
+            background: `linear-gradient(135deg, ${THEME.accent}, ${THEME.accentLight})`,
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>AI</span>
+          <span style={{ fontSize: 18, fontWeight: 600 }}>Рейтинги</span>
+        </a>
+        <nav style={{ display: 'flex', gap: 4 }}>
+          {links.map(link => {
+            const active = hash === link.href || (link.href === '#/' && (hash === '' || hash === '#/'));
+            return (
+              <a key={link.href} href={link.href} style={{
+                padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+                color: active ? THEME.accentLight : THEME.textSecondary,
+                background: active ? THEME.accentBg : 'transparent',
+                textDecoration: 'none', transition: 'all 0.2s',
+              }}>{link.label}</a>
+            );
+          })}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+// ============ FOOTER ============
+function Footer() {
+  return (
+    <footer style={{
+      borderTop: `1px solid ${THEME.border}`,
+      padding: '40px 24px', marginTop: 64,
+    }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 24 }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: THEME.text, marginBottom: 8 }}>
+            AI Рейтинги
+          </div>
+          <div style={{ fontSize: 13, color: THEME.textMuted, lineHeight: 1.8 }}>
+            Независимые рейтинги разработчиков ИИ и технологий.<br />
+            Данные собраны из открытых источников.
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 8 }}>Навигация</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <a href="#/" style={{ fontSize: 13, color: THEME.textMuted }}>Рейтинг</a>
+            <a href="#/cases" style={{ fontSize: 13, color: THEME.textMuted }}>Кейсы</a>
+            <a href="#/submit" style={{ fontSize: 13, color: THEME.textMuted }}>Добавить кейс</a>
+            <a href="#/audit" style={{ fontSize: 13, color: THEME.textMuted }}>Аудит проекта</a>
+          </div>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 4 }}>
+            Разработчик рейтинга
+          </div>
+          <a href="https://aimap.am" target="_blank" rel="noopener noreferrer" style={{
+            fontSize: 16, fontWeight: 700, color: THEME.accentLight, textDecoration: 'none',
+          }}>AI Map</a>
+          <div style={{ fontSize: 12, color: THEME.textMuted, marginTop: 4 }}>
+            Ереван, Армения
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ============ RATING PAGE ============
+function RatingPage() {
+  const [sortBy, setSortBy] = useState('cases');
+  const [filterType, setFilterType] = useState('all');
+
+  const sorted = useMemo(() => {
+    let list = [...developers];
+    if (filterType === 'code') list = list.filter(d => d.type.includes('Код'));
+    else if (filterType === 'constructor') list = list.filter(d => d.type.includes('Конструктор'));
+
+    if (sortBy === 'cases') list.sort((a, b) => b.cases - a.cases);
+    else if (sortBy === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+    return list;
+  }, [sortBy, filterType]);
+
+  const totalCases = cases.filter(c => c.developerSlug).length;
+  const totalBrands = new Set(cases.map(c => c.brand)).size;
+
+  return (
+    <div>
+      {/* Hero */}
+      <div style={{
+        background: `linear-gradient(135deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
+        border: `1px solid ${THEME.border}`, borderRadius: 16,
+        padding: '48px 32px', marginBottom: 32, textAlign: 'center',
+      }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
+          Рейтинг разработчиков чат-ботов
+        </h1>
+        <p style={{ fontSize: 16, color: THEME.textSecondary, maxWidth: 700, margin: '0 auto 24px' }}>
+          Рейтинг компаний по количеству публичных кейсов внедрения чат-ботов
+          для брендов из <strong style={{ color: THEME.text }}>Топ-100 крупнейших брендов России</strong> (BrandLab 2025)
+        </p>
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <StatBox label="Разработчиков" value={developers.length} />
+          <StatBox label="Кейсов" value={totalCases} color={THEME.success} />
+          <StatBox label="Брендов" value={totalBrands} color={THEME.warning} />
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{
+        display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap',
+        alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[
+            { key: 'all', label: 'Все' },
+            { key: 'code', label: 'Код' },
+            { key: 'constructor', label: 'Конструктор' },
+          ].map(f => (
+            <button key={f.key} onClick={() => setFilterType(f.key)} style={{
+              padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+              border: `1px solid ${filterType === f.key ? THEME.accent : THEME.border}`,
+              background: filterType === f.key ? THEME.accentBg : 'transparent',
+              color: filterType === f.key ? THEME.accentLight : THEME.textSecondary,
+              cursor: 'pointer', transition: 'all 0.2s',
+            }}>{f.label}</button>
+          ))}
+        </div>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{
+          padding: '6px 12px', borderRadius: 8, fontSize: 13,
+          border: `1px solid ${THEME.border}`, background: THEME.bgCard,
+          color: THEME.textSecondary, cursor: 'pointer',
+        }}>
+          <option value="cases">По кейсам</option>
+          <option value="name">По имени</option>
+        </select>
+      </div>
+
+      {/* Rating Table */}
+      <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: THEME.bgCard }}>
+              <th style={thStyle}>#</th>
+              <th style={{ ...thStyle, textAlign: 'left' }}>Разработчик</th>
+              <th style={thStyle}>Кейсы</th>
+              <th style={{ ...thStyle, textAlign: 'left' }}>Тип</th>
+              <th style={{ ...thStyle, textAlign: 'left', minWidth: 200 }}>Бренды</th>
+              <th style={thStyle}>Сайт</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((dev, i) => (
+              <tr key={dev.id}
+                style={{
+                  background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
+                  cursor: 'pointer', transition: 'background 0.15s',
+                }}
+                onClick={() => navigate(`/developer/${dev.slug}`)}
+                onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
+                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
+              >
+                <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
+                  <MedalIcon place={i + 1} />
+                </td>
+                <td style={{ ...tdStyle, fontWeight: 600 }}>
+                  <div>{dev.name}</div>
+                  {dev.name !== dev.fullName && (
+                    <div style={{ fontSize: 12, color: THEME.textMuted, fontWeight: 400 }}>
+                      {dev.fullName}
+                    </div>
+                  )}
+                </td>
+                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                  <span style={{
+                    display: 'inline-block', padding: '4px 12px', borderRadius: 8,
+                    fontSize: 16, fontWeight: 700,
+                    color: dev.cases >= 4 ? THEME.success : dev.cases >= 2 ? THEME.warning : THEME.textSecondary,
+                    background: dev.cases >= 4 ? `${THEME.success}15` : dev.cases >= 2 ? `${THEME.warning}15` : 'transparent',
+                  }}>{dev.cases}</span>
+                </td>
+                <td style={tdStyle}>
+                  <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
+                    {dev.type.includes('Конструктор') ? 'Конструктор' : 'Код'}
+                  </Badge>
+                </td>
+                <td style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                  {dev.brands.slice(0, 3).join(', ')}
+                  {dev.brands.length > 3 && ` +${dev.brands.length - 3}`}
+                </td>
+                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                  <a href={dev.site} target="_blank" rel="noopener noreferrer"
+                    onClick={e => e.stopPropagation()}
+                    style={{ fontSize: 13 }}>
+                    {new URL(dev.site).hostname.replace('www.', '')}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* SEO text */}
+      <div style={{ marginTop: 48, padding: 32, background: THEME.bgCard, borderRadius: 12, border: `1px solid ${THEME.border}` }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>О рейтинге разработчиков чат-ботов</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 }}>
+          Рейтинг основан на количестве публичных кейсов внедрения чат-ботов для компаний из списка
+          «Топ-100 самых дорогих брендов России 2025» по версии BrandLab. Учитываются только подтверждённые
+          кейсы с публичными источниками. Рейтинг включает как компании, разрабатывающие ботов на заказ (код),
+          так и платформы-конструкторы (low-code/no-code). Внутренние разработки компаний (in-house)
+          учитываются отдельно и не входят в рейтинг подрядчиков.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============ CASES PAGE ============
+function CasesPage() {
+  const [filterIndustry, setFilterIndustry] = useState('all');
+  const [filterType, setFilterType] = useState('all');
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() => {
+    let list = [...cases];
+    if (filterIndustry !== 'all') list = list.filter(c => c.industry === filterIndustry);
+    if (filterType !== 'all') list = list.filter(c => c.botType === filterType);
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(c =>
+        c.brand.toLowerCase().includes(q) ||
+        c.botName.toLowerCase().includes(q) ||
+        c.developer.toLowerCase().includes(q) ||
+        c.details.toLowerCase().includes(q)
+      );
+    }
+    return list.sort((a, b) => a.brandRank - b.brandRank);
+  }, [filterIndustry, filterType, search]);
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Кейсы чат-ботов</h1>
+          <p style={{ color: THEME.textSecondary }}>
+            {cases.length} кейсов внедрения для компаний из Топ-100 крупнейших брендов России
+          </p>
+        </div>
+        <a href="#/submit" style={{
+          padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
+          border: `1px solid ${THEME.accent}`, color: THEME.accentLight,
+          background: THEME.accentBg, textDecoration: 'none', whiteSpace: 'nowrap',
+        }}>+ Добавить кейс</a>
+      </div>
+
+      {/* Filters */}
+      <div style={{
+        display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center',
+      }}>
+        <input
+          value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Поиск по бренду, боту, разработчику..."
+          style={{
+            padding: '8px 16px', borderRadius: 8, fontSize: 14, flex: '1 1 250px',
+            border: `1px solid ${THEME.border}`, background: THEME.bgCard,
+            color: THEME.text, outline: 'none',
+          }}
+        />
+        <select value={filterIndustry} onChange={e => setFilterIndustry(e.target.value)} style={selectStyle}>
+          <option value="all">Все отрасли</option>
+          {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
+        </select>
+        <select value={filterType} onChange={e => setFilterType(e.target.value)} style={selectStyle}>
+          <option value="all">Все типы ботов</option>
+          {botTypes.map(t => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </div>
+
+      <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 16 }}>
+        Найдено: {filtered.length} кейсов
+      </div>
+
+      {/* Cases Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 16 }}>
+        {filtered.map((c, i) => (
+          <Card key={i}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 13, color: THEME.textMuted }}>#{c.brandRank} в Топ-100</div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 2 }}>{c.brand}</h3>
+              </div>
+              <Badge color={THEME.textMuted}>{c.industry}</Badge>
+            </div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: THEME.accentLight, marginBottom: 8 }}>
+              {c.botName}
+            </div>
+            <div style={{ fontSize: 13, color: THEME.textSecondary, marginBottom: 12, lineHeight: 1.6 }}>
+              {c.details}
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
+              <Badge>{c.botType}</Badge>
+              <Badge color={c.techType.includes('Конструктор') ? THEME.warning : THEME.accent}>
+                {c.techType.includes('Конструктор') ? 'Конструктор' : 'Код'}
+              </Badge>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13 }}>
+              <span>
+                Разработчик:{' '}
+                {c.developerSlug ? (
+                  <a href={`#/developer/${c.developerSlug}`} style={{ fontWeight: 600 }}>{c.developer}</a>
+                ) : (
+                  <span style={{ color: THEME.textMuted }}>{c.developer}</span>
+                )}
+              </span>
+              {c.source && (
+                <a href={c.source} target="_blank" rel="noopener noreferrer"
+                  style={{ color: THEME.textMuted, fontSize: 12 }}>
+                  Источник
+                </a>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============ DEVELOPER PAGE ============
+function DeveloperPage({ slug }) {
+  const dev = getDeveloperBySlug(slug);
+  if (!dev) return <div style={{ textAlign: 'center', padding: 64 }}><h2>Разработчик не найден</h2><a href="#/">Вернуться к рейтингу</a></div>;
+
+  const devCases = getCasesByDeveloper(slug);
+  const rank = developers.sort((a, b) => b.cases - a.cases).findIndex(d => d.id === dev.id) + 1;
+
+  return (
+    <div>
+      <Breadcrumb items={[
+        { label: 'Рейтинг', href: '#/' },
+        { label: dev.name },
+      ]} />
+
+      {/* Developer Header */}
+      <div style={{
+        background: THEME.bgCard, border: `1px solid ${THEME.border}`, borderRadius: 16,
+        padding: 32, marginBottom: 32,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <h1 style={{ fontSize: 28, fontWeight: 800 }}>{dev.name}</h1>
+              <Badge color={dev.type.includes('Конструктор') ? THEME.warning : THEME.accent}>
+                {dev.type.includes('Конструктор') ? 'Конструктор' : 'Код'}
+              </Badge>
+            </div>
+            {dev.name !== dev.fullName && (
+              <div style={{ fontSize: 14, color: THEME.textMuted, marginBottom: 8 }}>{dev.fullName}</div>
+            )}
+            <p style={{ fontSize: 14, color: THEME.textSecondary, maxWidth: 600, marginBottom: 16 }}>
+              {dev.description}
+            </p>
+            <ExternalLink href={dev.site}>{dev.site}</ExternalLink>
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <StatBox label="Место в рейтинге" value={`#${rank}`} color={rank <= 3 ? THEME.gold : THEME.accent} />
+            <StatBox label="Кейсов Топ-100" value={dev.cases} color={THEME.success} />
+            <StatBox label="Брендов" value={dev.brands.length} color={THEME.warning} />
+          </div>
+        </div>
+      </div>
+
+      {/* Brands */}
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Бренды-клиенты</h2>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32 }}>
+        {dev.brands.map(b => (
+          <span key={b} style={{
+            padding: '6px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+            background: THEME.bgCard, border: `1px solid ${THEME.border}`,
+          }}>{b}</span>
+        ))}
+      </div>
+
+      {/* Cases */}
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Кейсы ({devCases.length})</h2>
+      <div style={{ display: 'grid', gap: 16 }}>
+        {devCases.map((c, i) => (
+          <Card key={i}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+              <div>
+                <span style={{ fontSize: 13, color: THEME.textMuted }}>#{c.brandRank} в Топ-100 • {c.industry}</span>
+                <h3 style={{ fontSize: 16, fontWeight: 700, marginTop: 4 }}>
+                  {c.brand} — {c.botName}
+                </h3>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Badge>{c.botType}</Badge>
+              </div>
+            </div>
+            <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.6, marginBottom: 12 }}>
+              {c.details}
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Badge color={c.techType.includes('Конструктор') ? THEME.warning : THEME.accent}>
+                {c.techType}
+              </Badge>
+              {c.source && <ExternalLink href={c.source}>Источник</ExternalLink>}
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* JSON-LD for developer */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": dev.fullName,
+        "url": dev.site,
+        "description": dev.description,
+        "knowsAbout": ["chatbot development", "AI", "NLP"],
+      })}} />
+    </div>
+  );
+}
+
+// ============ SUBMIT CASE PAGE ============
+function SubmitCasePage() {
+  const [form, setForm] = useState({
+    brand: '', botName: '', developer: '', developerSite: '',
+    botType: '', techType: '', details: '', source: '',
+    contactName: '', contactEmail: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Формируем mailto-ссылку с данными формы
+    const subject = encodeURIComponent(`Новый кейс: ${form.brand} — ${form.botName}`);
+    const body = encodeURIComponent(
+      `Бренд: ${form.brand}\n` +
+      `Название бота: ${form.botName}\n` +
+      `Разработчик: ${form.developer}\n` +
+      `Сайт разработчика: ${form.developerSite}\n` +
+      `Тип бота: ${form.botType}\n` +
+      `Технология: ${form.techType}\n` +
+      `Детали кейса: ${form.details}\n` +
+      `Ссылка на источник: ${form.source}\n` +
+      `---\n` +
+      `Контакт: ${form.contactName}\n` +
+      `Email: ${form.contactEmail}`
+    );
+    window.open(`mailto:info@aimap.am?subject=${subject}&body=${body}`, '_blank');
+    setSubmitted(true);
+  };
+
+  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
+
+  if (submitted) {
+    return (
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center', padding: '64px 0' }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>&#10003;</div>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>Спасибо!</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, marginBottom: 24 }}>
+          Ваш кейс отправлен на рассмотрение. Мы проверим данные и добавим его в рейтинг.
+        </p>
+        <button onClick={() => { setSubmitted(false); setForm({ brand: '', botName: '', developer: '', developerSite: '', botType: '', techType: '', details: '', source: '', contactName: '', contactEmail: '' }); }}
+          style={{ ...btnPrimary, background: THEME.bgCard, border: `1px solid ${THEME.border}`, color: THEME.textSecondary }}>
+          Отправить ещё
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: 700, margin: '0 auto' }}>
+      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Добавить кейс</h1>
+      <p style={{ color: THEME.textSecondary, marginBottom: 32 }}>
+        Мы что-то упустили? Расскажите нам о кейсе внедрения чат-бота, и мы добавим его в рейтинг после проверки.
+      </p>
+
+      <form onSubmit={handleSubmit}>
+        <Card style={{ marginBottom: 24 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>Информация о кейсе</h3>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+            <div>
+              <label style={labelStyle}>Бренд / Компания *</label>
+              <input required value={form.brand} onChange={update('brand')} placeholder="Например: Сбер" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Название бота *</label>
+              <input required value={form.botName} onChange={update('botName')} placeholder="Например: Салют" style={inputStyle} />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+            <div>
+              <label style={labelStyle}>Разработчик *</label>
+              <input required value={form.developer} onChange={update('developer')} placeholder="Название компании-разработчика" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Сайт разработчика</label>
+              <input value={form.developerSite} onChange={update('developerSite')} placeholder="https://..." style={inputStyle} />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+            <div>
+              <label style={labelStyle}>Тип бота</label>
+              <select value={form.botType} onChange={update('botType')} style={{ ...inputStyle, cursor: 'pointer' }}>
+                <option value="">Выберите тип</option>
+                <option value="Поддержка клиентов">Поддержка клиентов</option>
+                <option value="HR">HR / Найм</option>
+                <option value="Продажи">Продажи</option>
+                <option value="Маркетинг">Маркетинг / Геймификация</option>
+                <option value="Голосовой ассистент">Голосовой ассистент</option>
+                <option value="Внутренний">Внутренний / Корпоративный</option>
+                <option value="B2B">B2B</option>
+                <option value="Другое">Другое</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Технология</label>
+              <select value={form.techType} onChange={update('techType')} style={{ ...inputStyle, cursor: 'pointer' }}>
+                <option value="">Выберите тип</option>
+                <option value="Код">Кодовая разработка</option>
+                <option value="Конструктор">Конструктор / No-code</option>
+                <option value="Гибрид">Гибрид</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>Детали кейса *</label>
+            <textarea required value={form.details} onChange={update('details')}
+              placeholder="Опишите кейс: что делает бот, какие результаты, метрики..."
+              rows={4} style={{ ...inputStyle, resize: 'vertical' }} />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Ссылка на источник *</label>
+            <input required value={form.source} onChange={update('source')} placeholder="https://..." style={inputStyle} />
+          </div>
+        </Card>
+
+        <Card style={{ marginBottom: 24 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>Контактные данные</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div>
+              <label style={labelStyle}>Ваше имя</label>
+              <input value={form.contactName} onChange={update('contactName')} placeholder="Имя" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Email</label>
+              <input type="email" value={form.contactEmail} onChange={update('contactEmail')} placeholder="email@example.com" style={inputStyle} />
+            </div>
+          </div>
+        </Card>
+
+        <button type="submit" style={btnPrimary}>Отправить кейс</button>
+      </form>
+    </div>
+  );
+}
+
+// ============ AUDIT PAGE ============
+function AuditPage() {
+  const [form, setForm] = useState({
+    company: '', industry: '', task: '', budget: '',
+    contactName: '', contactEmail: '', contactPhone: '', message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Запрос на аудит: ${form.company}`);
+    const body = encodeURIComponent(
+      `Компания: ${form.company}\n` +
+      `Отрасль: ${form.industry}\n` +
+      `Задача: ${form.task}\n` +
+      `Бюджет: ${form.budget}\n` +
+      `Комментарий: ${form.message}\n` +
+      `---\n` +
+      `Контакт: ${form.contactName}\n` +
+      `Email: ${form.contactEmail}\n` +
+      `Телефон: ${form.contactPhone}`
+    );
+    window.open(`mailto:info@aimap.am?subject=${subject}&body=${body}`, '_blank');
+    setSubmitted(true);
+  };
+
+  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
+
+  if (submitted) {
+    return (
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center', padding: '64px 0' }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>&#10003;</div>
+        <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>Заявка отправлена!</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, marginBottom: 24 }}>
+          Мы свяжемся с вами в течение 1-2 рабочих дней для обсуждения деталей.
+        </p>
+        <a href="#/" style={{ ...btnPrimary, display: 'inline-block', textDecoration: 'none' }}>Вернуться к рейтингу</a>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+        {/* Left: info */}
+        <div>
+          <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Аудит и подбор решения</h1>
+          <p style={{ fontSize: 15, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 32 }}>
+            Поможем разобраться в рынке чат-ботов и подобрать оптимальное решение для вашего бизнеса.
+          </p>
+
+          <div style={{ display: 'grid', gap: 16 }}>
+            <Card>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: THEME.accent }}>Анализ задачи</h3>
+              <p style={{ fontSize: 13, color: THEME.textSecondary, lineHeight: 1.6 }}>
+                Изучим ваши бизнес-процессы и определим, где чат-бот принесёт максимальную пользу:
+                поддержка, продажи, HR, внутренние коммуникации.
+              </p>
+            </Card>
+            <Card>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: THEME.success }}>Подбор технологии</h3>
+              <p style={{ fontSize: 13, color: THEME.textSecondary, lineHeight: 1.6 }}>
+                Код или конструктор? AI/NLP или сценарный бот? Голосовой или текстовый?
+                Подберём подход под ваш бюджет и задачи.
+              </p>
+            </Card>
+            <Card>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: THEME.warning }}>Рекомендация подрядчика</h3>
+              <p style={{ fontSize: 13, color: THEME.textSecondary, lineHeight: 1.6 }}>
+                На основе нашей базы из {developers.length}+ разработчиков и {cases.length}+ кейсов
+                порекомендуем подрядчиков с релевантным опытом в вашей отрасли.
+              </p>
+            </Card>
+          </div>
+
+          <div style={{ marginTop: 24, padding: 16, background: THEME.accentBg, borderRadius: 8, border: `1px solid ${THEME.accent}30` }}>
+            <div style={{ fontSize: 13, color: THEME.accentLight, fontWeight: 600, marginBottom: 4 }}>
+              Почему мы независимы
+            </div>
+            <p style={{ fontSize: 13, color: THEME.textSecondary, lineHeight: 1.6 }}>
+              AI Map — армянская компания. Мы не работаем на российском рынке как подрядчики,
+              но хорошо знаем его изнутри. Наши рекомендации основаны на данных, а не на партнёрских интересах.
+            </p>
+          </div>
+        </div>
+
+        {/* Right: form */}
+        <div>
+          <form onSubmit={handleSubmit}>
+            <Card>
+              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 20 }}>Оставить заявку</h3>
+
+              <div style={{ display: 'grid', gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>Компания *</label>
+                  <input required value={form.company} onChange={update('company')} placeholder="Название компании" style={inputStyle} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Отрасль</label>
+                  <select value={form.industry} onChange={update('industry')} style={{ ...inputStyle, cursor: 'pointer' }}>
+                    <option value="">Выберите отрасль</option>
+                    {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
+                    <option value="Другое">Другое</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Задача *</label>
+                  <textarea required value={form.task} onChange={update('task')} rows={3}
+                    placeholder="Опишите задачу: какую проблему хотите решить с помощью чат-бота?"
+                    style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+                <div>
+                  <label style={labelStyle}>Ориентировочный бюджет</label>
+                  <select value={form.budget} onChange={update('budget')} style={{ ...inputStyle, cursor: 'pointer' }}>
+                    <option value="">Не определён</option>
+                    <option value="до 500к">до 500 000 ₽</option>
+                    <option value="500к-2М">500 000 — 2 000 000 ₽</option>
+                    <option value="2М-5М">2 000 000 — 5 000 000 ₽</option>
+                    <option value="5М+">от 5 000 000 ₽</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Комментарий</label>
+                  <textarea value={form.message} onChange={update('message')} rows={2}
+                    placeholder="Дополнительная информация"
+                    style={{ ...inputStyle, resize: 'vertical' }} />
+                </div>
+
+                <div style={{ borderTop: `1px solid ${THEME.border}`, paddingTop: 16, marginTop: 4 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: THEME.textSecondary, marginBottom: 12 }}>Контактные данные</div>
+                  <div style={{ display: 'grid', gap: 12 }}>
+                    <div>
+                      <label style={labelStyle}>Имя *</label>
+                      <input required value={form.contactName} onChange={update('contactName')} placeholder="Ваше имя" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Email *</label>
+                      <input required type="email" value={form.contactEmail} onChange={update('contactEmail')} placeholder="email@company.ru" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Телефон</label>
+                      <input value={form.contactPhone} onChange={update('contactPhone')} placeholder="+7..." style={inputStyle} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" style={{ ...btnPrimary, width: '100%', marginTop: 20 }}>
+                Отправить заявку
+              </button>
+            </Card>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============ ABOUT PAGE ============
+function AboutPage() {
+  return (
+    <div style={{ maxWidth: 800 }}>
+      <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 16 }}>О проекте</h1>
+
+      {/* AI Map */}
+      <Card style={{ marginBottom: 24, borderColor: THEME.accent + '40' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>
+              Разработчик рейтинга — <span style={{ color: THEME.accentLight }}>AI Map</span>
+            </h2>
+            <Badge color={THEME.accent}>Ереван, Армения</Badge>
+          </div>
+        </div>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginTop: 16 }}>
+          AI Map — армянская компания, специализирующаяся на аналитике рынка ИИ и технологий.
+          Мы не работаем на российском рынке как подрядчики, но хорошо знакомы с его экосистемой.
+          Это позволяет нам составлять объективные и независимые рейтинги, основанные исключительно
+          на публичных данных, без конфликта интересов.
+        </p>
+        <div style={{ marginTop: 12 }}>
+          <ExternalLink href="https://aimap.am">aimap.am</ExternalLink>
+        </div>
+      </Card>
+
+      <Card style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>AI Рейтинги</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 16 }}>
+          AI Рейтинги — портал независимых рейтингов в сфере искусственного интеллекта,
+          разработки и технологий в России. Мы собираем и систематизируем данные из открытых
+          источников, чтобы помочь бизнесу выбрать подрядчика, а разработчикам — оценить рынок.
+        </p>
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Рейтинг разработчиков чат-ботов</h3>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 16 }}>
+          Первый рейтинг портала — рейтинг компаний-разработчиков чат-ботов по количеству
+          публичных кейсов для брендов из Топ-100 крупнейших брендов России (BrandLab 2025).
+          Рейтинг учитывает только подтверждённые кейсы с публичными источниками.
+        </p>
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Методология</h3>
+        <ul style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 2, paddingLeft: 20 }}>
+          <li>Источник списка брендов — BrandLab «Топ-100 самых дорогих брендов России 2025»</li>
+          <li>Учитываются только кейсы с публичным подтверждением (ссылка на источник)</li>
+          <li>Внутренние разработки компаний (in-house) не входят в рейтинг подрядчиков</li>
+          <li>Разделение на «Код» и «Конструктор» — по основному подходу разработчика</li>
+          <li>Один бренд может иметь несколько кейсов от разных разработчиков</li>
+        </ul>
+      </Card>
+
+      <Card style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Планируемые рейтинги</h2>
+        <ul style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 2, paddingLeft: 20 }}>
+          <li>Рейтинг конструкторов чат-ботов</li>
+          <li>Рейтинг ИИ-платформ для бизнеса</li>
+          <li>Рейтинг голосовых ассистентов</li>
+          <li>Рейтинг NLP-решений</li>
+        </ul>
+      </Card>
+
+      <Card>
+        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Хотите дополнить рейтинг?</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 16 }}>
+          Если мы упустили кейс или вы хотите предложить дополнение — заполните форму,
+          и мы добавим информацию после проверки.
+        </p>
+        <a href="#/submit" style={{
+          ...btnPrimary, display: 'inline-block', textDecoration: 'none',
+          padding: '10px 24px', fontSize: 14,
+        }}>Добавить кейс</a>
+      </Card>
+    </div>
+  );
+}
+
+// ============ TABLE STYLES ============
+const thStyle = {
+  padding: '12px 16px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase',
+  letterSpacing: '0.05em', color: THEME.textMuted, textAlign: 'center',
+  borderBottom: `1px solid ${THEME.border}`,
+};
+
+const tdStyle = {
+  padding: '12px 16px', fontSize: 14, borderBottom: `1px solid ${THEME.border}20`,
+  verticalAlign: 'middle',
+};
+
+const selectStyle = {
+  padding: '8px 12px', borderRadius: 8, fontSize: 13,
+  border: `1px solid ${THEME.border}`, background: THEME.bgCard,
+  color: THEME.textSecondary, cursor: 'pointer',
+};
+
+// ============ APP ============
+export default function App() {
+  const hash = useHashRouter();
+
+  let page;
+  if (hash.startsWith('#/developer/')) {
+    const slug = hash.replace('#/developer/', '');
+    page = <DeveloperPage slug={slug} />;
+  } else if (hash === '#/cases') {
+    page = <CasesPage />;
+  } else if (hash === '#/submit') {
+    page = <SubmitCasePage />;
+  } else if (hash === '#/audit') {
+    page = <AuditPage />;
+  } else if (hash === '#/about') {
+    page = <AboutPage />;
+  } else {
+    page = <RatingPage />;
+  }
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
+      <Header />
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px' }}>
+        {page}
+      </main>
+      <Footer />
+    </>
+  );
+}
