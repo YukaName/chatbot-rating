@@ -615,7 +615,7 @@ function CasesPage() {
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
               <Badge>{c.botType}</Badge>
               <Badge color={c.techType.includes('Конструктор') ? THEME.warning : THEME.accent}>
-                {c.techType.includes('Конструктор') ? 'Конструктор' : 'Код'}
+                {c.techType.includes('Конструктор') ? 'No-Code' : 'Code'}
               </Badge>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, flexWrap: 'wrap', gap: 4 }}>
@@ -685,7 +685,7 @@ function DeveloperPage({ slug }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
               <h1 style={{ fontSize: 28, fontWeight: 800 }}>{dev.name}</h1>
               <Badge color={isConstructor ? THEME.warning : THEME.accent}>
-                {isConstructor ? 'Конструктор' : 'Код'}
+                {isConstructor ? 'No-Code' : 'Code'}
               </Badge>
             </div>
             {dev.name !== dev.fullName && (
@@ -858,7 +858,7 @@ function SubmitCasePage() {
               <select value={form.techType} onChange={update('techType')} style={{ ...inputStyle, cursor: 'pointer' }}>
                 <option value="">Выберите тип</option>
                 <option value="Код">Кодовая разработка</option>
-                <option value="Конструктор">Конструктор / No-code</option>
+                <option value="Конструктор">No-Code</option>
                 <option value="Гибрид">Гибрид</option>
               </select>
             </div>
@@ -1100,7 +1100,7 @@ function AboutPage() {
           <li>Источник списка брендов — BrandLab «Топ-100 самых дорогих брендов России 2025»</li>
           <li>Учитываются только кейсы с публичным подтверждением (ссылка на источник)</li>
           <li>Внутренние разработки компаний (in-house) не входят в рейтинг подрядчиков</li>
-          <li>Разделение на «Код» и «Конструктор» — по основному подходу разработчика</li>
+          <li>Разделение на «Code» и «No-Code» — по основному подходу разработчика</li>
           <li>Один бренд может иметь несколько кейсов от разных разработчиков</li>
         </ul>
       </Card>
