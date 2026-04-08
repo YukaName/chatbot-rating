@@ -736,7 +736,7 @@ function DeveloperPage({ slug }) {
             </p>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Badge color={c.techType.includes('Конструктор') ? THEME.warning : THEME.accent}>
-                {c.techType}
+                {c.techType.replace(/Конструктор/g, 'No-Code')}
               </Badge>
               {c.source && <ExternalLink href={c.source}>Источник</ExternalLink>}
             </div>
