@@ -1029,10 +1029,6 @@ function AuditPage() {
                       <label style={labelStyle}>Telegram *</label>
                       <input required value={form.contactTg} onChange={update('contactTg')} placeholder="@username" style={inputStyle} />
                     </div>
-                    <div>
-                      <label style={labelStyle}>Телефон</label>
-                      <input value={form.contactPhone} onChange={update('contactPhone')} placeholder="+7..." style={inputStyle} />
-                    </div>
                   </div>
                 </div>
               </div>
