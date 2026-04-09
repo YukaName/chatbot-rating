@@ -9,7 +9,6 @@ export const chatbotSaas = [
   { name: 'TWIN', url: 'https://twin24.ai/', frequency: 2217, category: 'constructor', comment: '5 кейсов Топ-100' },
   { name: 'PuzzleBot', url: 'https://puzzlebot.top/', frequency: 2032, category: 'constructor', comment: '' },
   { name: 'BotoMan', url: 'https://botoman.ru/', frequency: 1375, category: 'constructor', comment: '' },
-  { name: 'Pipe', url: 'https://pipe.bot/', frequency: 1002, category: 'constructor', comment: 'RU+KZ' },
   { name: 'Robochat', url: 'https://robochat.io/', frequency: 870, category: 'constructor', comment: '' },
   { name: 'SAMBOT', url: 'https://sambot.ru/', frequency: 411, category: 'constructor', comment: '' },
   { name: 'Watbot', url: 'https://watbot.ru/', frequency: 387, category: 'constructor', comment: 'Франшиза' },
