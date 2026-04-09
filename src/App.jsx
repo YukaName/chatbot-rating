@@ -1155,9 +1155,11 @@ function ChatbotSaasPage() {
         <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
           Рейтинг конструкторов чат-ботов
         </h1>
+
+        <p style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 8 }}>Данные на 09.04.2026</p>
         <p style={{ fontSize: 16, color: THEME.textSecondary, maxWidth: 700, margin: '0 auto 24px' }}>
           Рейтинг SaaS-платформ для создания чат-ботов в России и СНГ
-          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в поисковых системах
+          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в Яндексе (данные Топвизор)
         </p>
         <div className="hero-stats" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <StatBox label="Платформ" value={chatbotSaas.length} />
@@ -1229,10 +1231,19 @@ function ChatbotSaasPage() {
       </div>
 
       <div style={{ marginTop: 48, padding: 32, background: THEME.bgCard, borderRadius: 12, border: `1px solid ${THEME.border}` }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>О рейтинге</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Методология и цель рейтинга</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }}>
+          Цель рейтинга — показать <strong style={{ color: THEME.text }}>стабильность платформ</strong>, а не определить лучшего.
+        </p>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }}>
+          Частота брендовых запросов в Яндексе отвечает как минимум за два параметра:
+        </p>
+        <ul style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 2, paddingLeft: 20, marginBottom: 12 }}>
+          <li><strong style={{ color: THEME.text }}>Обнаруживаемость</strong> — платформа позаботилась о том, чтобы её в принципе можно было найти, и ресурс адекватен</li>
+          <li><strong style={{ color: THEME.text }}>Популярность</strong> — показывает реальный интерес пользователей. Платформа с большой базой клиентов с малой вероятностью закроется</li>
+        </ul>
         <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 }}>
-          Рейтинг конструкторов чат-ботов основан на частоте брендовых запросов в поисковых системах (данные Топвизор).
-          Чем чаще пользователи ищут платформу по названию, тем выше её узнаваемость на рынке.
+          Источник данных: Топвизор, частота брендовых запросов в Яндексе (Россия). Дата: 09.04.2026.
           Учитываются только работающие SaaS-сервисы, доступные в России и СНГ.
         </p>
       </div>
@@ -1242,6 +1253,18 @@ function ChatbotSaasPage() {
 
 // ============ OMNICHANNEL CHAT PAGE ============
 function OmnichannelChatPage() {
+  const [search, setSearch] = useState('');
+
+  const sorted = useMemo(() => {
+    let list = [...omnichannelPlatforms];
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(s => s.name.toLowerCase().includes(q) || (s.comment && s.comment.toLowerCase().includes(q)));
+    }
+    list.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
+    return list;
+  }, [search]);
+
   return (
     <div>
       <div className="hero-section" style={{
@@ -1252,19 +1275,95 @@ function OmnichannelChatPage() {
         <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
           Рейтинг омниканальных чат-платформ
         </h1>
+        <p style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 8 }}>Данные на 09.04.2026</p>
         <p style={{ fontSize: 16, color: THEME.textSecondary, maxWidth: 700, margin: '0 auto 24px' }}>
           Рейтинг платформ для омниканальных коммуникаций в России и СНГ
-          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в поисковых системах
+          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в Яндексе (данные Топвизор)
         </p>
+        <div className="hero-stats" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <StatBox label="Платформ" value={omnichannelPlatforms.length} />
+        </div>
       </div>
 
-      <Card style={{ textAlign: 'center', padding: 64 }}>
-        <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>&#128296;</div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Рейтинг формируется</h2>
-        <p style={{ fontSize: 14, color: THEME.textSecondary }}>
-          Данные по омниканальным чат-платформам собираются и будут опубликованы в ближайшее время.
+      <div style={{ marginBottom: 24 }}>
+        <input
+          value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Поиск по названию..."
+          style={{
+            padding: '10px 16px', borderRadius: 8, fontSize: 14, width: '100%', maxWidth: 400,
+            border: `1px solid ${THEME.border}`, background: THEME.bgCard,
+            color: THEME.text, outline: 'none',
+          }}
+        />
+      </div>
+
+      <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: THEME.bgCard }}>
+              <th style={thStyle}>#</th>
+              <th style={{ ...thStyle, textAlign: 'left' }}>Платформа</th>
+              <th style={thStyle}>Частота запросов</th>
+              <th className="col-brands" style={{ ...thStyle, textAlign: 'left' }}>Комментарий</th>
+              <th className="col-site" style={thStyle}>Сайт</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((s, i) => (
+              <tr key={s.name}
+                style={{
+                  background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
+                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
+              >
+                <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
+                  <MedalIcon place={i + 1} />
+                </td>
+                <td style={{ ...tdStyle, fontWeight: 600 }}>{s.name}</td>
+                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                  {s.frequency ? (
+                    <span style={{
+                      display: 'inline-block', padding: '4px 12px', borderRadius: 8,
+                      fontSize: 14, fontWeight: 700,
+                      color: s.frequency >= 500 ? THEME.success : s.frequency >= 100 ? THEME.warning : THEME.textSecondary,
+                      background: s.frequency >= 500 ? `${THEME.success}15` : s.frequency >= 100 ? `${THEME.warning}15` : 'transparent',
+                    }}>{s.frequency.toLocaleString('ru-RU')}</span>
+                  ) : (
+                    <span style={{ color: THEME.textMuted }}>—</span>
+                  )}
+                </td>
+                <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                  {s.comment || '—'}
+                </td>
+                <td className="col-site" style={{ ...tdStyle, textAlign: 'center' }}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13 }}>
+                    {(() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })()}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ marginTop: 48, padding: 32, background: THEME.bgCard, borderRadius: 12, border: `1px solid ${THEME.border}` }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Методология и цель рейтинга</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }}>
+          Цель рейтинга — показать <strong style={{ color: THEME.text }}>стабильность платформ</strong>, а не определить лучшего.
         </p>
-      </Card>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }}>
+          Частота брендовых запросов в Яндексе отвечает как минимум за два параметра:
+        </p>
+        <ul style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 2, paddingLeft: 20, marginBottom: 12 }}>
+          <li><strong style={{ color: THEME.text }}>Обнаруживаемость</strong> — платформа позаботилась о том, чтобы её в принципе можно было найти, и ресурс адекватен</li>
+          <li><strong style={{ color: THEME.text }}>Популярность</strong> — показывает реальный интерес пользователей. Платформа с большой базой клиентов с малой вероятностью закроется</li>
+        </ul>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 }}>
+          Источник данных: Топвизор, частота брендовых запросов в Яндексе (Россия). Дата: 09.04.2026.
+        </p>
+      </div>
     </div>
   );
 }
