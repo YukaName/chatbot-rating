@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { developers, getDeveloperBySlug } from './data/developers';
 import { cases, getCasesByDeveloper, industries, botTypes, brands } from './data/cases';
+import { chatbotSaas } from './data/chatbot-saas';
+import { omnichannelPlatforms } from './data/omnichannel';
 
 // ============ THEME ============
 const THEME = {
@@ -168,6 +170,8 @@ function Header() {
   const hash = window.location.hash || '#/';
   const links = [
     { label: 'Рейтинг', href: '#/' },
+    { label: 'Конструкторы', href: '#/chatbot' },
+    { label: 'Чат-платформы', href: '#/omnichannel-chat' },
     { label: 'Кейсы', href: '#/cases' },
     { label: 'Аудит', href: '#/audit' },
     { label: 'О проекте', href: '#/about' },
@@ -1119,6 +1123,152 @@ function AboutPage() {
   );
 }
 
+// ============ CHATBOT SAAS PAGE ============
+function ChatbotSaasPage() {
+  const [search, setSearch] = useState('');
+
+  const sorted = useMemo(() => {
+    let list = [...chatbotSaas];
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(s => s.name.toLowerCase().includes(q) || (s.comment && s.comment.toLowerCase().includes(q)));
+    }
+    // Sort: with frequency first (desc), then without
+    list.sort((a, b) => {
+      if (a.frequency && b.frequency) return b.frequency - a.frequency;
+      if (a.frequency) return -1;
+      if (b.frequency) return 1;
+      return 0;
+    });
+    return list;
+  }, [search]);
+
+  const withFreq = sorted.filter(s => s.frequency);
+
+  return (
+    <div>
+      <div className="hero-section" style={{
+        background: `linear-gradient(135deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
+        border: `1px solid ${THEME.border}`, borderRadius: 16,
+        padding: '48px 32px', marginBottom: 32, textAlign: 'center',
+      }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
+          Рейтинг конструкторов чат-ботов
+        </h1>
+        <p style={{ fontSize: 16, color: THEME.textSecondary, maxWidth: 700, margin: '0 auto 24px' }}>
+          Рейтинг SaaS-платформ для создания чат-ботов в России и СНГ
+          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в поисковых системах
+        </p>
+        <div className="hero-stats" style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <StatBox label="Платформ" value={chatbotSaas.length} />
+          <StatBox label="С данными" value={withFreq.length} color={THEME.success} />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <input
+          value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="Поиск по названию..."
+          style={{
+            padding: '10px 16px', borderRadius: 8, fontSize: 14, width: '100%', maxWidth: 400,
+            border: `1px solid ${THEME.border}`, background: THEME.bgCard,
+            color: THEME.text, outline: 'none',
+          }}
+        />
+      </div>
+
+      <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: THEME.bgCard }}>
+              <th style={thStyle}>#</th>
+              <th style={{ ...thStyle, textAlign: 'left' }}>Платформа</th>
+              <th style={thStyle}>Частота запросов</th>
+              <th className="col-brands" style={{ ...thStyle, textAlign: 'left' }}>Комментарий</th>
+              <th className="col-site" style={thStyle}>Сайт</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((s, i) => (
+              <tr key={s.name}
+                style={{
+                  background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
+                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
+              >
+                <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
+                  <MedalIcon place={i + 1} />
+                </td>
+                <td style={{ ...tdStyle, fontWeight: 600 }}>{s.name}</td>
+                <td style={{ ...tdStyle, textAlign: 'center' }}>
+                  {s.frequency ? (
+                    <span style={{
+                      display: 'inline-block', padding: '4px 12px', borderRadius: 8,
+                      fontSize: 14, fontWeight: 700,
+                      color: s.frequency >= 2000 ? THEME.success : s.frequency >= 500 ? THEME.warning : THEME.textSecondary,
+                      background: s.frequency >= 2000 ? `${THEME.success}15` : s.frequency >= 500 ? `${THEME.warning}15` : 'transparent',
+                    }}>{s.frequency.toLocaleString('ru-RU')}</span>
+                  ) : (
+                    <span style={{ color: THEME.textMuted }}>—</span>
+                  )}
+                </td>
+                <td className="col-brands" style={{ ...tdStyle, fontSize: 13, color: THEME.textSecondary }}>
+                  {s.comment || '—'}
+                </td>
+                <td className="col-site" style={{ ...tdStyle, textAlign: 'center' }}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13 }}>
+                    {(() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })()}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ marginTop: 48, padding: 32, background: THEME.bgCard, borderRadius: 12, border: `1px solid ${THEME.border}` }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>О рейтинге</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 }}>
+          Рейтинг конструкторов чат-ботов основан на частоте брендовых запросов в поисковых системах (данные Топвизор).
+          Чем чаще пользователи ищут платформу по названию, тем выше её узнаваемость на рынке.
+          Учитываются только работающие SaaS-сервисы, доступные в России и СНГ.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============ OMNICHANNEL CHAT PAGE ============
+function OmnichannelChatPage() {
+  return (
+    <div>
+      <div className="hero-section" style={{
+        background: `linear-gradient(135deg, ${THEME.bgCard} 0%, ${THEME.bg} 100%)`,
+        border: `1px solid ${THEME.border}`, borderRadius: 16,
+        padding: '48px 32px', marginBottom: 32, textAlign: 'center',
+      }}>
+        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
+          Рейтинг омниканальных чат-платформ
+        </h1>
+        <p style={{ fontSize: 16, color: THEME.textSecondary, maxWidth: 700, margin: '0 auto 24px' }}>
+          Рейтинг платформ для омниканальных коммуникаций в России и СНГ
+          по <strong style={{ color: THEME.text }}>частоте брендовых запросов</strong> в поисковых системах
+        </p>
+      </div>
+
+      <Card style={{ textAlign: 'center', padding: 64 }}>
+        <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.5 }}>&#128296;</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Рейтинг формируется</h2>
+        <p style={{ fontSize: 14, color: THEME.textSecondary }}>
+          Данные по омниканальным чат-платформам собираются и будут опубликованы в ближайшее время.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
 // ============ PRIVACY PAGE ============
 function PrivacyPage() {
   const S = { h2: { fontSize: 18, fontWeight: 700, marginTop: 32, marginBottom: 12 }, p: { fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8, marginBottom: 12 }, li: { fontSize: 14, color: THEME.textSecondary, lineHeight: 1.8 } };
@@ -1275,6 +1425,10 @@ export default function App() {
   if (hash.startsWith('#/developer/')) {
     const slug = hash.replace('#/developer/', '');
     page = <DeveloperPage slug={slug} />;
+  } else if (hash === '#/chatbot') {
+    page = <ChatbotSaasPage />;
+  } else if (hash === '#/omnichannel-chat') {
+    page = <OmnichannelChatPage />;
   } else if (hash === '#/cases') {
     page = <CasesPage />;
   } else if (hash === '#/submit') {
