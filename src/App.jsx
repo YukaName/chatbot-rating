@@ -70,7 +70,7 @@ const IntIcon = ({ type, size = 16 }) => {
     case 'avito': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm8 4.5l5 11h-2.4l-1.1-2.5H10.5L9.4 17.5H7l5-11zm0 3.2L10.4 13h3.2L12 9.7z"/></svg>;
     case 'widget': return <svg viewBox="0 0 24 24" style={s}><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>;
     case 'max': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm1.5 5h2.2l2.3 4.5L12.3 7h2.2l-3.5 6.2V17h-2v-3.8L5.5 7zm8.5 0h2l1.5 3.8L19 7h2l-2.5 5.5V17h-2v-4.5L14 7z"/></svg>;
-    case 'ai': return <svg viewBox="0 0 24 24" style={s}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>;
+    case 'webapp': return <svg viewBox="0 0 24 24" style={s}><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 4v10h16V8H4zm2 2h4v2H6v-2zm6 0h6v2h-6v-2zm-6 4h3v2H6v-2z"/></svg>;
     default: return null;
   }
 };
@@ -1257,7 +1257,7 @@ function ChatbotSaasPage() {
               <th style={thStyle}>Частота запросов</th>
               <th className="col-brands" style={{ ...thStyle, textAlign: 'left' }}>Комментарий</th>
               <th className="col-site" style={thStyle}>Сайт</th>
-              <th className="col-site" style={{ ...thStyle, textAlign: 'left' }}>Юрлицо</th>
+              <th className="col-site" style={thStyle}>Выручка</th>
             </tr>
           </thead>
           <tbody>
@@ -1309,8 +1309,8 @@ function ChatbotSaasPage() {
                     {(() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })()}
                   </a>
                 </td>
-                <td className="col-site" style={{ ...tdStyle, fontSize: 12, color: THEME.textMuted }}>
-                  {s.legalName || '—'}
+                <td className="col-site" style={{ ...tdStyle, textAlign: 'center', fontSize: 12, color: THEME.textMuted }}>
+                  {s.revenue2025 ? `${(s.revenue2025 / 1e6).toFixed(0)} млн` : '—'}
                 </td>
               </tr>
             ))}
