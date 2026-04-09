@@ -64,7 +64,6 @@ export const INTEGRATIONS = [
   { key: 'fb', label: 'Facebook' },
   { key: 'avito', label: 'Avito' },
   { key: 'ozon', label: 'Ozon' },
-  { key: 'wb', label: 'WB' },
   { key: 'widget', label: 'Виджет' },
   { key: 'webapp', label: 'Web App' },
   { key: 'ai', label: 'AI' },

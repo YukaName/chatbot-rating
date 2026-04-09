@@ -1146,7 +1146,7 @@ function AboutPage() {
 // ============ CHATBOT SAAS PAGE ============
 function ChatbotSaasPage() {
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('constructor');
   const [sortBy, setSortBy] = useState('frequency');
   const [intFilters, setIntFilters] = useState([]);
 
@@ -1198,9 +1198,9 @@ function ChatbotSaasPage() {
       <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: 8 }}>
           {[
-            { key: 'all', label: 'Все' },
             { key: 'constructor', label: 'Конструкторы ботов' },
             { key: 'other', label: 'Боты не основной продукт' },
+            { key: 'all', label: 'Все' },
           ].map(f => (
             <button key={f.key} onClick={() => setFilter(f.key)} style={{
               padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
