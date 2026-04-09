@@ -8,7 +8,6 @@ export const chatbotSaas = [
   { name: 'TWIN', url: 'https://twin24.ai/', frequency: 2217, comment: '5 кейсов Топ-100' },
   { name: 'PuzzleBot', url: 'https://puzzlebot.top/', frequency: 2032, comment: '' },
   { name: 'BotoMan', url: 'https://botoman.ru/', frequency: 1375, comment: '' },
-  { name: 'MCN Telecom', url: 'https://chatbots.mcn.ru/', frequency: 1121, comment: '' },
   { name: 'Pipe', url: 'https://pipe.bot/', frequency: 1002, comment: 'RU+KZ' },
   { name: 'Robochat', url: 'https://robochat.io/', frequency: 870, comment: '' },
   { name: 'Botmother', url: 'https://botmother.com/', frequency: 839, comment: '' },
