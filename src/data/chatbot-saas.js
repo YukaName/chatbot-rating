@@ -37,8 +37,8 @@ export const chatbotSaas = [
   { name: 'Fleep.бизнес', url: 'https://fleep.bot/ru', frequency: 0, comment: '' },
 
   // Чат-платформы с конструктором ботов
-  { name: 'Jivo', url: 'https://www.jivo.ru/', frequency: 2671, comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
-  { name: 'LiveTex', url: 'https://livetex.ru/', frequency: 682, comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
+  { name: 'Jivo', url: 'https://www.jivo.ru/', frequency: 2671, comment: 'Основное — чат-платформа (Топ-3 в рейтинге чатов). Конструктор ботов не основной продукт' },
+  { name: 'LiveTex', url: 'https://livetex.ru/', frequency: 682, comment: 'Основное — чат-платформа (Топ-3 в рейтинге чатов). Конструктор ботов не основной продукт' },
   { name: 'ChatApp', url: 'https://chatapp.online/', frequency: 624, comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
   { name: 'Wappi', url: 'https://wappi.pro/', frequency: 551, comment: 'Основное — WhatsApp API. Упрощённый конструктор' },
   { name: 'Umnico', url: 'https://umnico.com/', frequency: 508, comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
