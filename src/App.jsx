@@ -74,6 +74,8 @@ const IntIcon = ({ type, size = 16 }) => {
     case 'ozon': return <svg viewBox="0 0 24 24" style={s}><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>;
     case 'wb': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm2.5 5h2l1.5 6 1.5-6h2l1.5 6 1.5-6h2l-2.5 10h-2L12 11l-1.5 6h-2L6.5 7z"/></svg>;
     case 'ai': return <svg viewBox="0 0 24 24" style={s}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>;
+    case 'chats': return <svg viewBox="0 0 24 24" style={s}><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>;
+    case 'openlines': return <svg viewBox="0 0 24 24" style={s}><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>;
     default: return null;
   }
 };
@@ -191,7 +193,6 @@ function Header() {
   const links = [
     { label: 'Рейтинг', href: '#/' },
     { label: 'Конструкторы', href: '#/chatbot' },
-    { label: 'Чат-платформы', href: '#/omnichannel-chat' },
     { label: 'Кейсы', href: '#/cases' },
     { label: 'Аудит', href: '#/audit' },
     { label: 'О проекте', href: '#/about' },
@@ -1157,6 +1158,7 @@ function ChatbotSaasPage() {
   const sorted = useMemo(() => {
     let list = [...chatbotSaas];
     if (filter === 'constructor') list = list.filter(s => s.category === 'constructor');
+    else if (filter === 'chat-platform') list = list.filter(s => s.category === 'chat-platform');
     else if (filter === 'other') list = list.filter(s => s.category === 'other');
     if (intFilters.length > 0) {
       list = list.filter(s => s.integrations && intFilters.every(k => s.integrations[k]));
@@ -1199,7 +1201,8 @@ function ChatbotSaasPage() {
         <div style={{ display: 'flex', gap: 8 }}>
           {[
             { key: 'constructor', label: 'Конструкторы ботов' },
-            { key: 'other', label: 'Боты не основной продукт' },
+            { key: 'chat-platform', label: 'Чат-платформы' },
+            { key: 'other', label: 'Не основной продукт' },
             { key: 'all', label: 'Все' },
           ].map(f => (
             <button key={f.key} onClick={() => setFilter(f.key)} style={{
@@ -1785,8 +1788,6 @@ export default function App() {
     page = <ChatbotSaasDetailPage slug={slug} />;
   } else if (hash === '#/chatbot') {
     page = <ChatbotSaasPage />;
-  } else if (hash === '#/omnichannel-chat') {
-    page = <OmnichannelChatPage />;
   } else if (hash === '#/cases') {
     page = <CasesPage />;
   } else if (hash === '#/submit') {
