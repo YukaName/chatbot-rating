@@ -73,7 +73,6 @@ const IntIcon = ({ type, size = 16 }) => {
     case 'webapp': return <svg viewBox="0 0 24 24" style={s}><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 4v10h16V8H4zm2 2h4v2H6v-2zm6 0h6v2h-6v-2zm-6 4h3v2H6v-2z"/></svg>;
     case 'ozon': return <svg viewBox="0 0 24 24" style={s}><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>;
     case 'wb': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm2.5 5h2l1.5 6 1.5-6h2l1.5 6 1.5-6h2l-2.5 10h-2L12 11l-1.5 6h-2L6.5 7z"/></svg>;
-    case 'wb': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm2.5 5h2l1.5 6 1.5-6h2l1.5 6 1.5-6h2l-2.5 10h-2L12 11l-1.5 6h-2L6.5 7z"/></svg>;
     case 'ai': return <svg viewBox="0 0 24 24" style={s}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>;
     default: return null;
   }
