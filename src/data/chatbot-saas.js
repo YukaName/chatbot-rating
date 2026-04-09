@@ -11,7 +11,6 @@ export const chatbotSaas = [
   { name: 'Pipe', url: 'https://pipe.bot/', frequency: 1002, comment: 'RU+KZ' },
   { name: 'Robochat', url: 'https://robochat.io/', frequency: 870, comment: '' },
   { name: 'Botmother', url: 'https://botmother.com/', frequency: 839, comment: '' },
-  { name: 'Manybot', url: 'https://manybot.io/', frequency: 670, comment: '' },
   { name: 'Leadteh', url: 'https://leadteh.ru/', frequency: 414, comment: 'Франчайзи Watbot' },
   { name: 'SAMBOT', url: 'https://sambot.ru/', frequency: 411, comment: '' },
   { name: 'Watbot', url: 'https://watbot.ru/', frequency: 387, comment: 'Франшиза' },
