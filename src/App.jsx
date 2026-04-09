@@ -1126,22 +1126,19 @@ function AboutPage() {
 // ============ CHATBOT SAAS PAGE ============
 function ChatbotSaasPage() {
   const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
 
   const sorted = useMemo(() => {
     let list = [...chatbotSaas];
+    if (filter === 'constructor') list = list.filter(s => s.category === 'constructor');
+    else if (filter === 'other') list = list.filter(s => s.category === 'other');
     if (search) {
       const q = search.toLowerCase();
       list = list.filter(s => s.name.toLowerCase().includes(q) || (s.comment && s.comment.toLowerCase().includes(q)));
     }
-    // Sort: with frequency first (desc), then without
-    list.sort((a, b) => {
-      if (a.frequency && b.frequency) return b.frequency - a.frequency;
-      if (a.frequency) return -1;
-      if (b.frequency) return 1;
-      return 0;
-    });
+    list.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
     return list;
-  }, [search]);
+  }, [search, filter]);
 
   const withFreq = sorted.filter(s => s.frequency);
 
@@ -1167,12 +1164,27 @@ function ChatbotSaasPage() {
         </div>
       </div>
 
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[
+            { key: 'all', label: 'Все' },
+            { key: 'constructor', label: 'Конструкторы ботов' },
+            { key: 'other', label: 'Боты не основной продукт' },
+          ].map(f => (
+            <button key={f.key} onClick={() => setFilter(f.key)} style={{
+              padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+              border: `1px solid ${filter === f.key ? THEME.accent : THEME.border}`,
+              background: filter === f.key ? THEME.accentBg : 'transparent',
+              color: filter === f.key ? THEME.accentLight : THEME.textSecondary,
+              cursor: 'pointer', transition: 'all 0.2s',
+            }}>{f.label}</button>
+          ))}
+        </div>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Поиск по названию..."
+          placeholder="Поиск..."
           style={{
-            padding: '10px 16px', borderRadius: 8, fontSize: 14, width: '100%', maxWidth: 400,
+            padding: '8px 16px', borderRadius: 8, fontSize: 14, flex: '1 1 200px', minWidth: 0,
             border: `1px solid ${THEME.border}`, background: THEME.bgCard,
             color: THEME.text, outline: 'none',
           }}
