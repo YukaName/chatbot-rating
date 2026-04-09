@@ -36,6 +36,6 @@ export const chatbotSaas = [
   { name: 'Boteus', url: 'https://boteus.com/', frequency: 1, comment: '' },
   { name: 'Телебиз', url: 'https://tbiz.pro/', frequency: 0, comment: 'Магазин' },
   { name: 'slashstart', url: 'https://slashstart.ru/', frequency: 0, comment: '' },
-  { name: 'Unisender', url: 'https://unisender.com/ru/features/chat-bot/telegram/', frequency: 0, comment: 'TG-боты' },
+  { name: 'Unisender', url: 'https://unisender.com/ru/features/chat-bot/telegram/', frequency: 4541, comment: 'TG-боты' },
   { name: 'Fleep.бизнес', url: 'https://fleep.bot/ru', frequency: 0, comment: '' },
 ];
