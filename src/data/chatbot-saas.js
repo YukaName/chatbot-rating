@@ -6,7 +6,6 @@ export const chatbotSaas = [
   { name: 'BotHelp', url: 'https://bothelp.io/', frequency: 2638, comment: '' },
   { name: 'Aimylogic', url: 'https://aimylogic.com/', frequency: 2346, comment: 'Just AI / Tovie' },
   { name: 'TWIN', url: 'https://twin24.ai/', frequency: 2217, comment: '5 кейсов Топ-100' },
-  { name: 'SendPulse', url: 'https://sendpulse.com/ru', frequency: 2132, comment: '' },
   { name: 'PuzzleBot', url: 'https://puzzlebot.top/', frequency: 2032, comment: '' },
   { name: 'BotoMan', url: 'https://botoman.ru/', frequency: 1375, comment: '' },
   { name: 'MCN Telecom', url: 'https://chatbots.mcn.ru/', frequency: 1121, comment: '' },
