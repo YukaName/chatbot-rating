@@ -33,7 +33,7 @@ export const chatbotSaas = [
   { name: 'Boteus', url: 'https://boteus.com/', frequency: 1, category: 'constructor', comment: '' },
   { name: 'Телебиз', url: 'https://tbiz.pro/', frequency: 0, category: 'constructor', comment: 'Магазин' },
   { name: 'slashstart', url: 'https://slashstart.ru/', frequency: 0, category: 'constructor', comment: '' },
-  { name: 'Senler', url: 'https://senler.ru/', frequency: 13508, category: 'constructor', comment: 'Рассылки и чат-боты ВКонтакте' },
+  { name: 'Senler', url: 'https://senler.ru/', frequency: 13508, category: 'other', comment: 'Основное — лидер по рассылкам ВКонтакте. Конструктор ботов не основной продукт' },
   { name: 'Chatplace', url: 'https://chatplace.io/', frequency: 1588, category: 'constructor', comment: '' },
   { name: 'Suvvy.ai', url: 'https://suvvy.ai/', frequency: 568, category: 'constructor', comment: '' },
   { name: 'Fleep.бизнес', url: 'https://fleep.bot/ru', frequency: 0, category: 'constructor', comment: '' },
