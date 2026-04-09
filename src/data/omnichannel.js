@@ -12,7 +12,7 @@ export const omnichannelPlatforms = [
   { name: 'edna', url: 'https://edna.ru/', frequency: 298, comment: 'Кейсы Топ-100 (М.Видео, Додо Пицца)' },
   { name: 'Chat2Desk', url: 'https://chat2desk.com/', frequency: 239, comment: '' },
   { name: 'Webim', url: 'https://webim.ru/', frequency: 162, comment: 'Кейс Топ-100 (Ozon.travel)' },
-  { name: 'Carrot quest', url: 'https://www.carrotquest.io/', frequency: 116, comment: '' },
+  { name: 'Carrot quest', url: 'https://www.carrotquest.io/', frequency: 81, comment: '' },
   { name: 'Radist.Online', url: 'https://radist.online/', frequency: 68, comment: '' },
   { name: 'OLChat', url: 'https://olchat.io/', frequency: 48, comment: '' },
   { name: 'Pact.im', url: 'https://pact.im/', frequency: 28, comment: '' },
