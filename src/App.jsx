@@ -1318,7 +1318,10 @@ function ChatbotSaasDetailPage({ slug }) {
               </Badge>
             </div>
             {s.comment && <p style={{ fontSize: 14, color: THEME.textSecondary, marginBottom: 12 }}>{s.comment}</p>}
-            <ExternalLink href={s.url}>{s.url}</ExternalLink>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <ExternalLink href={s.url}>{s.url}</ExternalLink>
+              {s.parentUrl && <ExternalLink href={s.parentUrl}>Компания: {s.parentUrl}</ExternalLink>}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <StatBox label="Общий рейтинг" value={`#${rank}`} color={rank <= 3 ? THEME.gold : THEME.accent} />
