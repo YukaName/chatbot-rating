@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { developers, getDeveloperBySlug } from './data/developers';
 import { cases, getCasesByDeveloper, industries, botTypes, brands } from './data/cases';
-import { chatbotSaas } from './data/chatbot-saas';
+import { chatbotSaas, getSaasBySlug } from './data/chatbot-saas';
 import { omnichannelPlatforms } from './data/omnichannel';
 
 // ============ THEME ============
@@ -1127,6 +1127,7 @@ function AboutPage() {
 function ChatbotSaasPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('frequency');
 
   const sorted = useMemo(() => {
     let list = [...chatbotSaas];
@@ -1136,9 +1137,11 @@ function ChatbotSaasPage() {
       const q = search.toLowerCase();
       list = list.filter(s => s.name.toLowerCase().includes(q) || (s.comment && s.comment.toLowerCase().includes(q)));
     }
-    list.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
+    if (sortBy === 'revenue') list.sort((a, b) => (b.revenue2025 || 0) - (a.revenue2025 || 0));
+    else if (sortBy === 'employees') list.sort((a, b) => (b.employees || 0) - (a.employees || 0));
+    else list.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
     return list;
-  }, [search, filter]);
+  }, [search, filter, sortBy]);
 
   const withFreq = sorted.filter(s => s.frequency);
 
@@ -1180,6 +1183,11 @@ function ChatbotSaasPage() {
             }}>{f.label}</button>
           ))}
         </div>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={selectStyle}>
+          <option value="frequency">По запросам</option>
+          <option value="revenue">По выручке</option>
+          <option value="employees">По сотрудникам</option>
+        </select>
         <input
           value={search} onChange={e => setSearch(e.target.value)}
           placeholder="Поиск..."
@@ -1207,8 +1215,9 @@ function ChatbotSaasPage() {
               <tr key={s.name}
                 style={{
                   background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
-                  transition: 'background 0.15s',
+                  cursor: s.slug ? 'pointer' : 'default', transition: 'background 0.15s',
                 }}
+                onClick={() => s.slug && navigate(`/chatbot/${s.slug}`)}
                 onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
               >
@@ -1259,6 +1268,144 @@ function ChatbotSaasPage() {
           Учитываются только работающие SaaS-сервисы, доступные в России и СНГ.
         </p>
       </div>
+    </div>
+  );
+}
+
+// ============ CHATBOT SAAS DETAIL PAGE ============
+function ChatbotSaasDetailPage({ slug }) {
+  const s = getSaasBySlug(slug);
+  if (!s) return <div style={{ textAlign: 'center', padding: 64 }}><h2>Платформа не найдена</h2><a href="#/chatbot">Вернуться к рейтингу</a></div>;
+
+  const allSorted = [...chatbotSaas].sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
+  const rank = allSorted.findIndex(x => x.slug === slug) + 1;
+  const catSorted = allSorted.filter(x => x.category === s.category);
+  const catRank = catSorted.findIndex(x => x.slug === slug) + 1;
+
+  const fmtMoney = (v) => {
+    if (!v) return '—';
+    if (Math.abs(v) >= 1e9) return `${(v / 1e9).toFixed(1)} млрд`;
+    if (Math.abs(v) >= 1e6) return `${(v / 1e6).toFixed(0)} млн`;
+    return `${(v / 1e3).toFixed(0)} тыс`;
+  };
+  const fmtGrowth = (cur, prev) => {
+    if (!cur || !prev) return null;
+    const pct = ((cur - prev) / Math.abs(prev) * 100).toFixed(0);
+    return pct > 0 ? `+${pct}%` : `${pct}%`;
+  };
+
+  const revenueGrowth = fmtGrowth(s.revenue2025, s.revenue2024);
+  const profitGrowth = fmtGrowth(s.profit2025, s.profit2024);
+
+  return (
+    <div>
+      <Breadcrumb items={[
+        { label: 'Конструкторы', href: '#/chatbot' },
+        { label: s.name },
+      ]} />
+
+      {/* Header */}
+      <div style={{
+        background: THEME.bgCard, border: `1px solid ${THEME.border}`, borderRadius: 16,
+        padding: 32, marginBottom: 32,
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <h1 style={{ fontSize: 28, fontWeight: 800 }}>{s.name}</h1>
+              <Badge color={s.category === 'constructor' ? THEME.accent : THEME.warning}>
+                {s.category === 'constructor' ? s.focus : `Основное — ${s.focus}`}
+              </Badge>
+            </div>
+            {s.comment && <p style={{ fontSize: 14, color: THEME.textSecondary, marginBottom: 12 }}>{s.comment}</p>}
+            <ExternalLink href={s.url}>{s.url}</ExternalLink>
+          </div>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <StatBox label="Общий рейтинг" value={`#${rank}`} color={rank <= 3 ? THEME.gold : THEME.accent} />
+            <StatBox label={s.category === 'constructor' ? 'Среди конструкторов' : 'Среди прочих'} value={`#${catRank}`} color={THEME.warning} />
+            <StatBox label="Запросов/мес" value={s.frequency ? s.frequency.toLocaleString('ru-RU') : '—'} color={THEME.success} />
+          </div>
+        </div>
+      </div>
+
+      {/* Financial */}
+      {(s.revenue2025 || s.employees || s.legalName) && (
+        <>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Финансовые показатели</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 16, marginBottom: 32 }}>
+            {s.revenue2025 != null && (
+              <Card>
+                <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 4 }}>Выручка 2025</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: THEME.success }}>{fmtMoney(s.revenue2025)} ₽</div>
+                {revenueGrowth && <div style={{ fontSize: 13, color: revenueGrowth.startsWith('+') ? THEME.success : THEME.danger, marginTop: 4 }}>{revenueGrowth} к 2024</div>}
+              </Card>
+            )}
+            {s.profit2025 != null && (
+              <Card>
+                <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 4 }}>Прибыль 2025</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: s.profit2025 >= 0 ? THEME.success : THEME.danger }}>{fmtMoney(s.profit2025)} ₽</div>
+                {profitGrowth && <div style={{ fontSize: 13, color: profitGrowth.startsWith('+') ? THEME.success : THEME.danger, marginTop: 4 }}>{profitGrowth} к 2024</div>}
+              </Card>
+            )}
+            {s.employees && (
+              <Card>
+                <div style={{ fontSize: 13, color: THEME.textMuted, marginBottom: 4 }}>Сотрудников</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: THEME.accent }}>{s.employees}</div>
+              </Card>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Company info */}
+      {(s.legalName || s.inn || s.city) && (
+        <>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>О компании</h2>
+          <Card style={{ marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '8px 16px', fontSize: 14, color: THEME.textSecondary }}>
+              {s.legalName && <><span style={{ color: THEME.textMuted }}>Юрлицо:</span><span>{s.legalName}</span></>}
+              {s.inn && <><span style={{ color: THEME.textMuted }}>ИНН:</span><span>{s.inn}</span></>}
+              {s.city && <><span style={{ color: THEME.textMuted }}>Город:</span><span>{s.city}</span></>}
+              {s.focus && <><span style={{ color: THEME.textMuted }}>Направление:</span><span>{s.focus}</span></>}
+            </div>
+          </Card>
+        </>
+      )}
+
+      {/* Historical */}
+      {s.revenue2024 && (
+        <>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Динамика</h2>
+          <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}`, marginBottom: 32 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: THEME.bgCard }}>
+                  <th style={{ ...thStyle, textAlign: 'left' }}>Показатель</th>
+                  <th style={thStyle}>2024</th>
+                  <th style={thStyle}>2025</th>
+                  <th style={thStyle}>Рост</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ ...tdStyle, fontWeight: 600 }}>Выручка</td>
+                  <td style={{ ...tdStyle, textAlign: 'center' }}>{fmtMoney(s.revenue2024)} ₽</td>
+                  <td style={{ ...tdStyle, textAlign: 'center' }}>{fmtMoney(s.revenue2025)} ₽</td>
+                  <td style={{ ...tdStyle, textAlign: 'center', color: revenueGrowth && revenueGrowth.startsWith('+') ? THEME.success : THEME.danger }}>{revenueGrowth || '—'}</td>
+                </tr>
+                <tr style={{ background: `${THEME.bgCard}60` }}>
+                  <td style={{ ...tdStyle, fontWeight: 600 }}>Прибыль</td>
+                  <td style={{ ...tdStyle, textAlign: 'center' }}>{fmtMoney(s.profit2024)} ₽</td>
+                  <td style={{ ...tdStyle, textAlign: 'center' }}>{fmtMoney(s.profit2025)} ₽</td>
+                  <td style={{ ...tdStyle, textAlign: 'center', color: profitGrowth && profitGrowth.startsWith('+') ? THEME.success : THEME.danger }}>{profitGrowth || '—'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      <p style={{ fontSize: 13, color: THEME.textMuted }}>Источник финансовых данных: открытые данные ФНС. Дата рейтинга: 09.04.2026.</p>
     </div>
   );
 }
@@ -1325,8 +1472,9 @@ function OmnichannelChatPage() {
               <tr key={s.name}
                 style={{
                   background: i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`,
-                  transition: 'background 0.15s',
+                  cursor: s.slug ? 'pointer' : 'default', transition: 'background 0.15s',
                 }}
+                onClick={() => s.slug && navigate(`/chatbot/${s.slug}`)}
                 onMouseEnter={e => e.currentTarget.style.background = THEME.accentBg}
                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : `${THEME.bgCard}60`}
               >
@@ -1536,6 +1684,9 @@ export default function App() {
   if (hash.startsWith('#/developer/')) {
     const slug = hash.replace('#/developer/', '');
     page = <DeveloperPage slug={slug} />;
+  } else if (hash.startsWith('#/chatbot/')) {
+    const slug = hash.replace('#/chatbot/', '');
+    page = <ChatbotSaasDetailPage slug={slug} />;
   } else if (hash === '#/chatbot') {
     page = <ChatbotSaasPage />;
   } else if (hash === '#/omnichannel-chat') {
