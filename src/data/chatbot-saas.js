@@ -38,4 +38,19 @@ export const chatbotSaas = [
   { name: 'slashstart', url: 'https://slashstart.ru/', frequency: 0, comment: '' },
   { name: 'Unisender', url: 'https://unisender.com/ru/features/chat-bot/telegram/', frequency: 4541, comment: 'Лидер email-рассылок, TG-боты' },
   { name: 'Fleep.бизнес', url: 'https://fleep.bot/ru', frequency: 0, comment: '' },
+
+  // Чат-платформы с конструктором ботов
+  { name: 'Jivo', url: 'https://www.jivo.ru/', frequency: 2671, comment: 'Чат-платформа. Визуальный конструктор из блоков' },
+  { name: 'LiveTex', url: 'https://livetex.ru/', frequency: 682, comment: 'Чат-платформа. Сценарный, текстовый и ИИ-бот' },
+  { name: 'ChatApp', url: 'https://chatapp.online/', frequency: 624, comment: 'Чат-платформа. No-code конструктор ботов' },
+  { name: 'Wappi', url: 'https://wappi.pro/', frequency: 551, comment: 'WhatsApp API. Упрощённый конструктор + ИИ-ассистент' },
+  { name: 'Umnico', url: 'https://umnico.com/', frequency: 508, comment: 'Чат-платформа. Визуальный no-code конструктор' },
+  { name: 'Callibri', url: 'https://callibri.ru/', frequency: 312, comment: 'Чат-платформа. Упрощённый: автоответчик + квиз' },
+  { name: 'edna', url: 'https://edna.ru/', frequency: 298, comment: 'Чат-платформа. Кейсы Топ-100 (М.Видео, Додо Пицца)' },
+  { name: 'Chat2Desk', url: 'https://chat2desk.com/', frequency: 239, comment: 'Чат-платформа. Конструктор 2.0 + GPT' },
+  { name: 'Webim', url: 'https://webim.ru/', frequency: 162, comment: 'Чат-платформа. Несколько типов ботов. Кейс Топ-100 (Ozon.travel)' },
+  { name: 'Carrot quest', url: 'https://www.carrotquest.io/', frequency: 81, comment: 'Маркетинг + чат-платформа. Визуальный лид-бот' },
+  { name: 'Radist.Online', url: 'https://radist.online/', frequency: 68, comment: 'Интеграция с CRM. Упрощённый: через роботов CRM' },
+  { name: 'Pact.im', url: 'https://pact.im/', frequency: 28, comment: 'Чат-платформа. Упрощённый конструктор' },
+  { name: 'Sherlock Platform', url: 'https://sherlock.im/', frequency: 5, comment: 'Чат-платформа + ИИ. GPT-боты, no-code. Кейс Топ-100 (Золотое яблоко)' },
 ];
