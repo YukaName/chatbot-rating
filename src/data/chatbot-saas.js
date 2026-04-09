@@ -19,7 +19,6 @@ export const chatbotSaas = [
   { name: 'Watbot', url: 'https://watbot.ru/', frequency: 387, comment: 'Франшиза: Leadteh, JetBot' },
   { name: 'WinWinBot', url: 'https://winwinbot.com/', frequency: 363, comment: '' },
   { name: 'JetBot', url: 'https://jetbot24.ru/', frequency: 288, comment: 'Копия Watbot' },
-  { name: 'Smartbot', url: 'https://smartbot.studio/', frequency: 279, comment: '' },
   { name: 'Smartbot Pro', url: 'https://www.smartbotpro.ru/', frequency: 226, comment: '4 кейса Топ-100' },
   { name: 'Botobot', url: 'https://www.botobot.ru/', frequency: 212, comment: 'Магазин' },
   { name: 'BotTap', url: 'https://bottap.ru/', frequency: 183, comment: '' },
