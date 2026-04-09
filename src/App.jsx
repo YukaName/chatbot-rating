@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { developers, getDeveloperBySlug } from './data/developers';
 import { cases, getCasesByDeveloper, industries, botTypes, brands } from './data/cases';
-import { chatbotSaas, getSaasBySlug } from './data/chatbot-saas';
+import { chatbotSaas, getSaasBySlug, INTEGRATIONS } from './data/chatbot-saas';
 import { omnichannelPlatforms } from './data/omnichannel';
 
 // ============ THEME ============
@@ -1128,11 +1128,19 @@ function ChatbotSaasPage() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('frequency');
+  const [intFilters, setIntFilters] = useState([]);
+
+  const toggleInt = (key) => {
+    setIntFilters(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
+  };
 
   const sorted = useMemo(() => {
     let list = [...chatbotSaas];
     if (filter === 'constructor') list = list.filter(s => s.category === 'constructor');
     else if (filter === 'other') list = list.filter(s => s.category === 'other');
+    if (intFilters.length > 0) {
+      list = list.filter(s => s.integrations && intFilters.every(k => s.integrations[k]));
+    }
     if (search) {
       const q = search.toLowerCase();
       list = list.filter(s => s.name.toLowerCase().includes(q) || (s.comment && s.comment.toLowerCase().includes(q)));
@@ -1141,7 +1149,7 @@ function ChatbotSaasPage() {
     else if (sortBy === 'employees') list.sort((a, b) => (b.employees || 0) - (a.employees || 0));
     else list.sort((a, b) => (b.frequency || 0) - (a.frequency || 0));
     return list;
-  }, [search, filter, sortBy]);
+  }, [search, filter, sortBy, intFilters]);
 
   const withFreq = sorted.filter(s => s.frequency);
 
@@ -1199,6 +1207,30 @@ function ChatbotSaasPage() {
         />
       </div>
 
+      {/* Integration filters */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: 12, color: THEME.textMuted, marginRight: 4 }}>Интеграции:</span>
+        {INTEGRATIONS.map(int => {
+          const active = intFilters.includes(int.key);
+          return (
+            <button key={int.key} onClick={() => toggleInt(int.key)} title={int.label} style={{
+              padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+              border: `1px solid ${active ? THEME.accent : THEME.border}`,
+              background: active ? THEME.accentBg : 'transparent',
+              color: active ? THEME.accentLight : THEME.textMuted,
+              cursor: 'pointer', transition: 'all 0.15s',
+            }}>{int.icon}</button>
+          );
+        })}
+        {intFilters.length > 0 && (
+          <button onClick={() => setIntFilters([])} style={{
+            padding: '4px 10px', borderRadius: 6, fontSize: 11,
+            border: 'none', background: 'transparent',
+            color: THEME.textMuted, cursor: 'pointer', textDecoration: 'underline',
+          }}>сбросить</button>
+        )}
+      </div>
+
       <div className="rating-table-wrap" style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${THEME.border}` }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -1225,7 +1257,21 @@ function ChatbotSaasPage() {
                 <td style={{ ...tdStyle, textAlign: 'center', width: 50 }}>
                   <MedalIcon place={i + 1} />
                 </td>
-                <td style={{ ...tdStyle, fontWeight: 600 }}>{s.name}</td>
+                <td style={{ ...tdStyle, fontWeight: 600 }}>
+                  <div>{s.name}</div>
+                  {s.integrations && (
+                    <div style={{ display: 'flex', gap: 3, marginTop: 4, flexWrap: 'wrap' }}>
+                      {INTEGRATIONS.filter(int => s.integrations[int.key]).map(int => (
+                        <span key={int.key} title={int.label} style={{
+                          fontSize: 9, fontWeight: 700, padding: '1px 4px', borderRadius: 3,
+                          background: intFilters.includes(int.key) ? THEME.accentBg : `${THEME.border}80`,
+                          color: intFilters.includes(int.key) ? THEME.accentLight : THEME.textMuted,
+                          border: `1px solid ${intFilters.includes(int.key) ? THEME.accent + '40' : 'transparent'}`,
+                        }}>{int.icon}</span>
+                      ))}
+                    </div>
+                  )}
+                </td>
                 <td style={{ ...tdStyle, textAlign: 'center' }}>
                   {s.frequency ? (
                     <span style={{
@@ -1336,6 +1382,29 @@ function ChatbotSaasDetailPage({ slug }) {
       </div>
 
       {/* Financial */}
+      {/* Integrations */}
+      {s.integrations && (
+        <>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Поддерживаемые каналы</h2>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 32 }}>
+            {INTEGRATIONS.map(int => {
+              const supported = s.integrations[int.key];
+              return (
+                <div key={int.key} style={{
+                  padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+                  background: supported ? THEME.accentBg : THEME.bg,
+                  border: `1px solid ${supported ? THEME.accent + '40' : THEME.border}`,
+                  color: supported ? THEME.accentLight : THEME.textMuted,
+                  opacity: supported ? 1 : 0.4,
+                }}>
+                  {int.icon} {int.label}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       {(s.revenue2025 || s.employees || s.legalName) && (
         <>
           <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Финансовые показатели</h2>
