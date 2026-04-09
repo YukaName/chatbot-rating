@@ -1208,6 +1208,7 @@ function ChatbotSaasPage() {
               <th style={thStyle}>Частота запросов</th>
               <th className="col-brands" style={{ ...thStyle, textAlign: 'left' }}>Комментарий</th>
               <th className="col-site" style={thStyle}>Сайт</th>
+              <th className="col-site" style={{ ...thStyle, textAlign: 'left' }}>Юрлицо</th>
             </tr>
           </thead>
           <tbody>
@@ -1244,6 +1245,9 @@ function ChatbotSaasPage() {
                   <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13 }}>
                     {(() => { try { return new URL(s.url).hostname.replace('www.',''); } catch { return s.url; } })()}
                   </a>
+                </td>
+                <td className="col-site" style={{ ...tdStyle, fontSize: 12, color: THEME.textMuted }}>
+                  {s.legalName || '—'}
                 </td>
               </tr>
             ))}
