@@ -56,11 +56,13 @@ export const chatbotSaas = [
 export const getSaasBySlug = (slug) => chatbotSaas.find(s => s.slug === slug);
 
 export const INTEGRATIONS = [
-  { key: 'tg', label: 'Telegram', icon: 'TG' },
-  { key: 'vk', label: 'ВКонтакте', icon: 'VK' },
-  { key: 'wa', label: 'WhatsApp', icon: 'WA' },
-  { key: 'avito', label: 'Avito', icon: 'AV' },
-  { key: 'widget', label: 'Виджет на сайт', icon: 'WEB' },
-  { key: 'ig', label: 'Instagram', icon: 'IG' },
-  { key: 'fb', label: 'Facebook', icon: 'FB' },
+  { key: 'tg', label: 'Telegram' },
+  { key: 'vk', label: 'ВКонтакте' },
+  { key: 'wa', label: 'WhatsApp' },
+  { key: 'ig', label: 'Instagram' },
+  { key: 'fb', label: 'Facebook' },
+  { key: 'avito', label: 'Avito' },
+  { key: 'widget', label: 'Web App' },
+  { key: 'max', label: 'Max' },
+  { key: 'ai', label: 'AI' },
 ];

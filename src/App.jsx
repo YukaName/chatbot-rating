@@ -58,6 +58,23 @@ const globalStyles = `
   }
 `;
 
+// ============ INTEGRATION ICONS ============
+const IntIcon = ({ type, size = 16 }) => {
+  const s = { width: size, height: size, fill: 'currentColor', flexShrink: 0 };
+  switch (type) {
+    case 'tg': return <svg viewBox="0 0 24 24" style={s}><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.84.42z"/></svg>;
+    case 'vk': return <svg viewBox="0 0 24 24" style={s}><path d="M21.57 7.2s.16-.53 0-.73c-.18-.22-.72-.16-.72-.16h-2.44s-.18-.02-.31.06c-.13.07-.21.24-.21.24s-.38.99-.88 1.83c-1.07 1.79-1.5 1.88-1.67 1.77-.41-.25-.3-1.03-.3-1.58 0-1.72.26-2.44-.5-2.62-.26-.06-.44-.1-1.1-.1-.83 0-1.54 0-1.93.19-.27.13-.47.43-.35.45.16.02.52.1.71.35.25.33.24 1.07.24 1.07s.14 2.02-.33 2.27c-.33.17-.77-.18-1.72-1.77-.5-.82-.88-1.72-.88-1.72s-.07-.17-.2-.26c-.15-.1-.36-.14-.36-.14l-2.05.01s-.3.01-.41.14c-.1.12-.01.37-.01.37s1.67 3.9 3.55 5.87c1.73 1.8 3.69 1.68 3.69 1.68h.89s.27-.03.4-.17c.13-.14.12-.38.12-.38s-.02-1.17.52-1.34c.53-.17 1.22 1.12 1.95 1.61.55.38.97.3.97.3l1.95-.03s1.02-.06.54-.84c-.04-.06-.28-.59-1.43-1.67-1.21-1.14-1.05-.95.41-2.92.89-1.2 1.24-1.93 1.13-2.24z"/></svg>;
+    case 'wa': return <svg viewBox="0 0 24 24" style={s}><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.82 13.97c-.24.68-1.41 1.3-1.95 1.38-.5.07-1.13.1-1.83-.11-.42-.13-.96-.32-1.65-.63-2.9-1.26-4.79-4.18-4.93-4.37-.14-.2-1.16-1.54-1.16-2.94 0-1.4.73-2.09 1-2.37.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.65.49.24.57.82 2 .89 2.15.07.14.12.31.02.5-.1.19-.14.31-.29.48-.14.17-.3.37-.43.5-.14.14-.3.3-.13.59.17.29.76 1.25 1.63 2.03 1.12.99 2.07 1.3 2.36 1.44.29.14.46.12.63-.07.17-.2.73-.85.93-1.14.2-.29.39-.24.66-.14.27.1 1.7.8 1.99.95.29.14.49.22.56.34.07.12.07.7-.17 1.37z"/></svg>;
+    case 'ig': return <svg viewBox="0 0 24 24" style={s}><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.42-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.17-.42-.37-1.06-.42-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.78.3-1.45.71-2.11 1.37S.93 3.36.63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.78.71 1.45 1.37 2.11s1.33 1.07 2.11 1.37c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.78-.3 1.45-.71 2.11-1.37s1.07-1.33 1.37-2.11c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.88 5.88 0 00-1.37-2.11A5.88 5.88 0 0019.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-11.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>;
+    case 'fb': return <svg viewBox="0 0 24 24" style={s}><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07c0 6.02 4.39 11.02 10.13 11.93v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.87v2.26h3.32l-.53 3.49h-2.8v8.44C19.61 23.09 24 18.09 24 12.07z"/></svg>;
+    case 'avito': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm8 4.5l5 11h-2.4l-1.1-2.5H10.5L9.4 17.5H7l5-11zm0 3.2L10.4 13h3.2L12 9.7z"/></svg>;
+    case 'widget': return <svg viewBox="0 0 24 24" style={s}><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>;
+    case 'max': return <svg viewBox="0 0 24 24" style={s}><path d="M4 2a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2H4zm1.5 5h2.2l2.3 4.5L12.3 7h2.2l-3.5 6.2V17h-2v-3.8L5.5 7zm8.5 0h2l1.5 3.8L19 7h2l-2.5 5.5V17h-2v-4.5L14 7z"/></svg>;
+    case 'ai': return <svg viewBox="0 0 24 24" style={s}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>;
+    default: return null;
+  }
+};
+
 // ============ ROUTER ============
 function useHashRouter() {
   const [hash, setHash] = useState(window.location.hash || '#/');
@@ -1214,12 +1231,12 @@ function ChatbotSaasPage() {
           const active = intFilters.includes(int.key);
           return (
             <button key={int.key} onClick={() => toggleInt(int.key)} title={int.label} style={{
-              padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+              padding: '5px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4,
               border: `1px solid ${active ? THEME.accent : THEME.border}`,
               background: active ? THEME.accentBg : 'transparent',
               color: active ? THEME.accentLight : THEME.textMuted,
-              cursor: 'pointer', transition: 'all 0.15s',
-            }}>{int.icon}</button>
+              cursor: 'pointer', transition: 'all 0.15s', fontSize: 11,
+            }}><IntIcon type={int.key} size={16} /><span className="col-type">{int.label}</span></button>
           );
         })}
         {intFilters.length > 0 && (
@@ -1263,11 +1280,11 @@ function ChatbotSaasPage() {
                     <div style={{ display: 'flex', gap: 3, marginTop: 4, flexWrap: 'wrap' }}>
                       {INTEGRATIONS.filter(int => s.integrations[int.key]).map(int => (
                         <span key={int.key} title={int.label} style={{
-                          fontSize: 9, fontWeight: 700, padding: '1px 4px', borderRadius: 3,
+                          display: 'inline-flex', padding: '2px', borderRadius: 3,
                           background: intFilters.includes(int.key) ? THEME.accentBg : `${THEME.border}80`,
                           color: intFilters.includes(int.key) ? THEME.accentLight : THEME.textMuted,
                           border: `1px solid ${intFilters.includes(int.key) ? THEME.accent + '40' : 'transparent'}`,
-                        }}>{int.icon}</span>
+                        }}><IntIcon type={int.key} size={12} /></span>
                       ))}
                     </div>
                   )}
@@ -1397,7 +1414,7 @@ function ChatbotSaasDetailPage({ slug }) {
                   color: supported ? THEME.accentLight : THEME.textMuted,
                   opacity: supported ? 1 : 0.4,
                 }}>
-                  {int.icon} {int.label}
+                  <IntIcon type={int.key} size={14} /> {int.label}
                 </div>
               );
             })}
