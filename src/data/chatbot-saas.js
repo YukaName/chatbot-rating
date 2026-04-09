@@ -3,7 +3,7 @@
 // category: 'constructor' — конструктор ботов основной продукт, 'other' — боты не основной продукт
 export const chatbotSaas = [
   { name: 'SaleBot', url: 'https://salebot.pro/', frequency: 8158, category: 'constructor', comment: 'Кейс Топ-100 (Росатом)' },
-  { name: 'Leadtex', url: 'https://leadtex.ru/', frequency: 3735, category: 'constructor', comment: '' },
+  { name: 'Leadtex', url: 'https://leadteh.ru/', frequency: 3735, category: 'constructor', comment: 'Франчайзи Watbot' },
   { name: 'BotHelp', url: 'https://bothelp.io/', frequency: 2638, category: 'constructor', comment: '' },
   { name: 'Aimylogic', url: 'https://aimylogic.com/', frequency: 2346, category: 'constructor', comment: 'Just AI / Tovie' },
   { name: 'TWIN', url: 'https://twin24.ai/', frequency: 2217, category: 'constructor', comment: '5 кейсов Топ-100' },
@@ -11,7 +11,6 @@ export const chatbotSaas = [
   { name: 'BotoMan', url: 'https://botoman.ru/', frequency: 1375, category: 'constructor', comment: '' },
   { name: 'Pipe', url: 'https://pipe.bot/', frequency: 1002, category: 'constructor', comment: 'RU+KZ' },
   { name: 'Robochat', url: 'https://robochat.io/', frequency: 870, category: 'constructor', comment: '' },
-  { name: 'Leadteh', url: 'https://leadteh.ru/', frequency: 414, category: 'constructor', comment: 'Франчайзи Watbot' },
   { name: 'SAMBOT', url: 'https://sambot.ru/', frequency: 411, category: 'constructor', comment: '' },
   { name: 'Watbot', url: 'https://watbot.ru/', frequency: 387, category: 'constructor', comment: 'Франшиза' },
   { name: 'WinWinBot', url: 'https://winwinbot.com/', frequency: 363, category: 'constructor', comment: '' },
@@ -34,16 +33,20 @@ export const chatbotSaas = [
   { name: 'Boteus', url: 'https://boteus.com/', frequency: 1, category: 'constructor', comment: '' },
   { name: 'Телебиз', url: 'https://tbiz.pro/', frequency: 0, category: 'constructor', comment: 'Магазин' },
   { name: 'slashstart', url: 'https://slashstart.ru/', frequency: 0, category: 'constructor', comment: '' },
+  { name: 'Senler', url: 'https://senler.ru/', frequency: 13508, category: 'constructor', comment: 'Рассылки и чат-боты ВКонтакте' },
+  { name: 'Chatplace', url: 'https://chatplace.io/', frequency: 1588, category: 'constructor', comment: '' },
+  { name: 'Suvvy.ai', url: 'https://suvvy.ai/', frequency: 568, category: 'constructor', comment: '' },
   { name: 'Fleep.бизнес', url: 'https://fleep.bot/ru', frequency: 0, category: 'constructor', comment: '' },
 
   // Боты не основной продукт
+  { name: 'Callibri', url: 'https://callibri.ru/', frequency: 312, category: 'other', comment: 'Основное — чат-платформа. Упрощённый конструктор' },
+  { name: 'Envybox', url: 'https://envybox.io/', frequency: 439, category: 'other', comment: 'Основное — виджеты. Упрощённый конструктор' },
   { name: 'Unisender', url: 'https://unisender.com/ru/features/chat-bot/telegram/', frequency: 4541, category: 'other', comment: 'Основное — email-рассылки. Конструктор ботов не основной продукт' },
   { name: 'Jivo', url: 'https://www.jivo.ru/', frequency: 2671, category: 'other', comment: 'Основное — чат-платформа (Топ-3 в рейтинге чатов). Конструктор ботов не основной продукт' },
   { name: 'LiveTex', url: 'https://livetex.ru/', frequency: 682, category: 'other', comment: 'Основное — чат-платформа (Топ-3 в рейтинге чатов). Конструктор ботов не основной продукт' },
   { name: 'ChatApp', url: 'https://chatapp.online/', frequency: 624, category: 'other', comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
   { name: 'Wappi', url: 'https://wappi.pro/', frequency: 551, category: 'other', comment: 'Основное — WhatsApp API. Упрощённый конструктор' },
   { name: 'Umnico', url: 'https://umnico.com/', frequency: 508, category: 'other', comment: 'Основное — чат-платформа. Конструктор ботов не основной продукт' },
-  { name: 'Callibri', url: 'https://callibri.ru/', frequency: 312, category: 'other', comment: 'Основное — чат-платформа + аналитика. Упрощённый конструктор' },
   { name: 'edna', url: 'https://edna.ru/', frequency: 298, category: 'other', comment: 'Основное — чат-платформа. Кейсы Топ-100 (М.Видео, Додо Пицца)' },
   { name: 'Chat2Desk', url: 'https://chat2desk.com/', frequency: 239, category: 'other', comment: 'Основное — чат-платформа. Конструктор 2.0 + GPT' },
   { name: 'Webim', url: 'https://webim.ru/', frequency: 162, category: 'other', comment: 'Основное — чат-платформа. Кейс Топ-100 (Ozon.travel)' },

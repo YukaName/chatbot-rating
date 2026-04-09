@@ -19,4 +19,6 @@ export const omnichannelPlatforms = [
   { name: 'Whapi', url: 'https://whapi.cloud/', frequency: 13, comment: 'WhatsApp API для разработчиков' },
   { name: 'Sherlock Platform', url: 'https://sherlock.im/', frequency: 5, comment: 'Чат-платформа + ИИ + GPT-боты. Кейс Топ-100' },
   { name: 'WhatCRM (Телфин)', url: 'https://whatcrm.net/', frequency: 0, comment: 'Интеграция мессенджеров с CRM' },
+  { name: 'Envybox', url: 'https://envybox.io/', frequency: 439, comment: 'Основное — виджеты' },
+  { name: 'Fasttrack', url: 'https://fstrk.io/', frequency: 0, comment: 'Чат-платформа' },
 ];
