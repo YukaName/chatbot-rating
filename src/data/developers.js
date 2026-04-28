@@ -39,7 +39,7 @@ export const developers = [
     fullName: 'NC Team (проектный офис Smartbot)',
     cases: 4,
     type: 'Конструктор (Smartbot Pro) + lowcode',
-    site: 'https://www.smartbotpro.ru',
+    site: 'https://ncteam.io/',
     brands: ['Пятёрочка/X5', 'ВкусВилл', 'Flowwow', 'VK Маркет'],
     description: 'Проектный офис по разработке чат-ботов на платформе Smartbot Pro. Специализация на маркетинговых ботах и геймификации. С 2025 года развивают отдельное направление вайбкодинга.',
   },

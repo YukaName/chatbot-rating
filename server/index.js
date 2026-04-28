@@ -17,7 +17,7 @@ const developers = [
   { slug: 'kts', name: 'KTS', fullName: 'KTS (кодовая разработка)', cases: 6, type: 'Код', site: 'https://kts.tech', brands: ['Сбер (СберКот)', 'VK Праздники', 'VK Video', 'Бургер Кинг', 'Самокат', 'Пятёрочка/X5'] },
   { slug: 'just-ai', name: 'Just AI', fullName: 'Just AI (JAICP)', cases: 6, type: 'Код (JAICP)', site: 'https://just-ai.com', brands: ['Альфа-Банк', 'М.Видео', 'Совкомбанк', 'Ozon.travel', 'Мегафон (Вика)', 'DNS (NPS)'] },
   { slug: 'twin', name: 'TWIN', fullName: 'TWIN', cases: 5, type: 'Конструктор', site: 'https://twin24.ai', brands: ['Додо Пицца', 'Ростелеком', 'X5 Group (NPS)', '2ГИС', 'РЖД'] },
-  { slug: 'nc-team', name: 'NC Team', fullName: 'NC Team (Smartbot Pro)', cases: 4, type: 'Конструктор', site: 'https://www.smartbotpro.ru', brands: ['Пятёрочка/X5', 'ВкусВилл', 'Flowwow', 'VK Маркет'] },
+  { slug: 'nc-team', name: 'NC Team', fullName: 'NC Team (Smartbot Pro)', cases: 4, type: 'Конструктор', site: 'https://ncteam.io/', brands: ['Пятёрочка/X5', 'ВкусВилл', 'Flowwow', 'VK Маркет'] },
   { slug: 'autofaq', name: 'AutoFAQ', fullName: 'AutoFAQ', cases: 4, type: 'Код', site: 'https://autofaq.ai', brands: ['МТС', 'Газпромбанк', 'Ростелеком', 'РУСАЛ'] },
   { slug: 'eora', name: 'EORA', fullName: 'EORA (zDialog)', cases: 3, type: 'Код', site: 'https://eora.ru', brands: ['Магнит', 'Додо Пицца', 'S7 Airlines'] },
   { slug: 'crt', name: 'ЦРТ', fullName: 'ЦРТ (ChatNavigator)', cases: 3, type: 'Код', site: 'https://www.speechpro.ru', brands: ['Билайн', 'T2/Tele2', 'Ростелеком'] },
